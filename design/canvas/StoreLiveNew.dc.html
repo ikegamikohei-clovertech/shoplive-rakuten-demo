@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f5f2; --surface:#ffffff; --surface-alt:#eeeee9;
+      --border:#e1e1da; --border-strong:#cfcfc6;
+      --ink:#1c1e24; --ink-soft:#5b5e69; --ink-faint:#9195a0;
+      --accent:#3d3a7a; --accent-strong:#2c295c; --accent-soft:#ecebf6;
+      --pending:#a06a1f; --pending-soft:#f5ecd9;
+      --shadow-card:0 1px 2px rgba(28,30,36,.05),0 6px 18px rgba(28,30,36,.07);
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;}
+    a{color:var(--accent-strong);text-decoration:none;}
+    .icon{width:16px;height:16px;flex:0 0 auto;}
+    .icon-sm{width:14px;height:14px;}
+
+    .app-header{display:flex;align-items:center;gap:32px;padding:0 32px;height:68px;background:var(--surface);border-bottom:1px solid var(--border);}
+    .brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;font-family:"Archivo",sans-serif;}
+    .brand .icon{width:22px;height:22px;color:var(--accent);}
+    .brand-accent{color:var(--accent);}
+    .main-nav{display:flex;gap:0;flex:1;}
+    .nav-link{display:flex;align-items:center;height:68px;font-size:14px;font-weight:600;color:var(--ink-faint);border-bottom:2px solid transparent;margin-right:22px;}
+    .nav-link.active{color:var(--ink);border-bottom-color:var(--accent);}
+    .header-right{display:flex;align-items:center;gap:14px;}
+    .seller-switch{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:100px;border:1px solid var(--border-strong);background:var(--surface);font-size:13px;font-weight:600;color:var(--ink);}
+    .seller-switch .icon{color:var(--accent);}
+    .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent-strong);font-family:"Archivo",sans-serif;}
+
+    .page{max-width:1300px;margin:0 auto;padding:32px 32px 90px;}
+    .page-title{font-family:"Archivo",sans-serif;font-size:26px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em;}
+    .page-sub{font-size:13.5px;color:var(--ink-soft);margin:0 0 26px;}
+
+    .layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;}
+    .col{display:flex;flex-direction:column;gap:22px;}
+
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:26px 28px;}
+    .panel h2{font-family:"Archivo",sans-serif;font-size:15px;font-weight:800;margin:0 0 18px;display:flex;align-items:center;gap:8px;}
+    .panel h2 .icon{color:var(--accent);}
+
+    .field{margin-bottom:18px;}
+    .field:last-child{margin-bottom:0;}
+    .field label{display:block;font-family:"Archivo",sans-serif;font-size:12px;font-weight:700;margin-bottom:7px;color:var(--ink);}
+    .input, .textarea{width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:10px 13px;font-size:13.5px;font-family:inherit;color:var(--ink);background:var(--surface);}
+    .textarea{resize:none;line-height:1.7;}
+    .row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+    .hint-text{font-size:11px;color:var(--ink-faint);margin-top:6px;}
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface-alt);border-radius:8px;padding:12px 14px;}
+    .toggle-row .t-label{font-size:13px;font-weight:600;}
+    .toggle-row .t-hint{font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
+    .toggle{width:38px;height:22px;border-radius:100px;background:var(--border-strong);position:relative;flex:0 0 auto;}
+    .toggle.on{background:var(--accent);}
+    .toggle i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;}
+    .toggle.on i{left:18px;}
+
+    .dropzone{border:1.5px dashed var(--border-strong);border-radius:10px;background:var(--surface-alt);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:26px;color:var(--ink-faint);}
+    .dropzone .icon{width:26px;height:26px;color:var(--ink-faint);}
+    .dropzone span{font-size:12.5px;font-weight:600;}
+
+    .product-search{display:flex;gap:8px;margin-bottom:14px;}
+    .product-search .input{flex:1;}
+    .btn-outline{display:inline-flex;align-items:center;gap:6px;font-family:"Archivo",sans-serif;font-size:12.5px;font-weight:700;padding:9px 14px;border-radius:8px;border:1px solid var(--border-strong);color:var(--ink);background:var(--surface);white-space:nowrap;}
+
+    .product-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--border);}
+    .product-row:last-child{border-bottom:none;}
+    .product-thumb{width:40px;height:40px;border-radius:8px;flex:0 0 auto;}
+    .product-name{font-size:13px;font-weight:600;flex:1;}
+    .product-price{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft);}
+    .check{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+    .check.on{background:var(--accent);color:#fff;}
+    .check.off{border:1.5px solid var(--border-strong);}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:"Archivo",sans-serif;font-size:13.5px;font-weight:700;padding:12px 18px;border-radius:8px;border:none;cursor:pointer;}
+    .btn-primary{background:var(--accent);color:#fff;}
+    .btn-ghost{background:transparent;border:1px solid var(--border-strong);color:var(--ink);}
+    .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
+
+    .preview-card{background:#1c1e24;border-radius:14px;padding:16px;color:#fff;}
+    .preview-card .label{font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a9a5e8;margin-bottom:12px;}
+    .preview-thumb{height:150px;border-radius:10px;background:linear-gradient(135deg,#e7dfc9,#c9b98c);margin-bottom:12px;position:relative;}
+    .preview-badge{position:absolute;top:10px;left:10px;background:#fff;color:var(--accent-strong);font-family:"Archivo",sans-serif;font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:100px;}
+    .preview-title{font-size:14px;font-weight:700;margin:0 0 6px;line-height:1.5;}
+    .preview-meta{font-size:11.5px;color:#b9bac2;font-family:"IBM Plex Mono",monospace;}
+
+    .summary-list{margin-top:14px;font-size:12px;color:#c8c9d2;line-height:2;}
+    .summary-list b{color:#fff;font-weight:700;}
+  </style>
+</helmet>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="14" r="2" fill="currentColor" stroke="none"/><path d="M8.2 10.2a5.4 5.4 0 0 1 7.6 0"/><path d="M5.5 7.5a9.2 9.2 0 0 1 13 0"/></svg>
+    OnAir<span class="brand-accent">Console</span>
+  </div>
+  <nav class="main-nav">
+    <a class="nav-link">ライブ一覧</a>
+    <a class="nav-link active">新規作成</a>
+    <a class="nav-link">アカウント設定</a>
+  </nav>
+  <div class="header-right">
+    <button class="seller-switch">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1-5h14l1 5"/><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="20" x2="9" y2="13"/><line x1="15" y1="20" x2="15" y2="13"/></svg>
+      宮崎茶房 みやざき本店
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="avatar">宮</div>
+  </div>
+</header>
+
+<div class="page">
+  <h1 class="page-title">ライブの新規作成</h1>
+  <p class="page-sub">配信内容と登録商品を確定させて申請してください。審査には内容が確定していることが必要です。</p>
+
+  <div class="layout">
+    <div class="col">
+      <div class="panel">
+        <h2><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>基本情報</h2>
+        <div class="field">
+          <label>タイトル</label>
+          <input class="input" value="新茶入荷記念！おうちで楽しむ本格煎茶の淹れ方">
+        </div>
+        <div class="row-3">
+          <div class="field">
+            <label>配信開始予定</label>
+            <input class="input" value="2026/05/09（土）20:00">
+          </div>
+          <div class="field">
+            <label>配信終了予定 <span class="hint" style="font-weight:500;color:var(--ink-faint);">任意</span></label>
+            <input class="input" value="2026/05/09（土）20:45">
+          </div>
+          <div class="field">
+            <label>リハーサルパスコード</label>
+            <input class="input" value="7421">
+          </div>
+        </div>
+        <div class="field">
+          <label>サムネイル画像</label>
+          <div class="dropzone">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 6 19"/></svg>
+            <span>画像をドラッグ&amp;ドロップ、またはクリックしてアップロード</span>
+          </div>
+          <div class="hint-text">楽天のライブ一覧表示専用の画像です（Shopliveには送信されません）</div>
+        </div>
+        <div class="field">
+          <label>配信概要</label>
+          <textarea class="textarea" rows="3">静岡県産の新茶を使った淹れ方講座。急須の選び方、茶葉の量、湯温による味の違いを実演しながら紹介します。</textarea>
+        </div>
+        <div class="field">
+          <div class="toggle-row">
+            <div>
+              <div class="t-label">配信終了後にリプレイを公開する</div>
+              <div class="t-hint">視聴者はアーカイブとして見逃し視聴できます</div>
+            </div>
+            <div class="toggle on"><i></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M3 4h2l2.2 11.4a2 2 0 0 0 2 1.6h7.4a2 2 0 0 0 2-1.6L21 8H6.2"/></svg>登録商品（4点）</h2>
+        <div class="product-search">
+          <input class="input" placeholder="商品名・SKUで検索">
+          <button class="btn-outline">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            検索
+          </button>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb" style="background:linear-gradient(135deg,#dcefe4,#a9cfb8);"></div>
+          <span class="product-name">静岡産 深蒸し煎茶 100g</span>
+          <span class="product-price">¥1,200</span>
+          <div class="check on"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg></div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb" style="background:linear-gradient(135deg,#f0e3d6,#cf9f75);"></div>
+          <span class="product-name">特選和紅茶 ティーバッグ12個入</span>
+          <span class="product-price">¥980</span>
+          <div class="check on"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg></div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb" style="background:linear-gradient(135deg,#e9e4d8,#b7ac8f);"></div>
+          <span class="product-name">茶香炉セット</span>
+          <span class="product-price">¥3,600</span>
+          <div class="check on"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg></div>
+        </div>
+        <div class="product-row">
+          <div class="product-thumb" style="background:linear-gradient(135deg,#e2d8ce,#a3806a);"></div>
+          <span class="product-name">急須（常滑焼）</span>
+          <span class="product-price">¥4,800</span>
+          <div class="check on"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost">下書き保存</button>
+        <button class="btn btn-primary">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg>
+          審査に申請する
+        </button>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="preview-card">
+        <div class="label">ライブ一覧での見え方</div>
+        <div class="preview-thumb">
+          <span class="preview-badge">審査中</span>
+        </div>
+        <p class="preview-title">新茶入荷記念！おうちで楽しむ本格煎茶の淹れ方</p>
+        <div class="preview-meta">2026/05/09（土） 20:00〜</div>
+        <div class="summary-list">
+          登録商品 <b>4点</b><br>
+          配信予定時間 <b>約45分</b><br>
+          申請先 <b>楽天市場運営事務局</b>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

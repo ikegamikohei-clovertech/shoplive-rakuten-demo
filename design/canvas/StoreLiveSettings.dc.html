@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f5f2; --surface:#ffffff; --surface-alt:#eeeee9;
+      --border:#e1e1da; --border-strong:#cfcfc6;
+      --ink:#1c1e24; --ink-soft:#5b5e69; --ink-faint:#9195a0;
+      --accent:#3d3a7a; --accent-strong:#2c295c; --accent-soft:#ecebf6;
+      --shadow-card:0 1px 2px rgba(28,30,36,.05),0 6px 18px rgba(28,30,36,.07);
+      --shadow-lift:0 14px 30px rgba(28,30,36,.18);
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;}
+    a{color:var(--accent-strong);text-decoration:none;}
+    .icon{width:16px;height:16px;flex:0 0 auto;}
+    .icon-sm{width:14px;height:14px;}
+
+    .app-header{display:flex;align-items:center;gap:32px;padding:0 32px;height:68px;background:var(--surface);border-bottom:1px solid var(--border);}
+    .brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;font-family:"Archivo",sans-serif;}
+    .brand .icon{width:22px;height:22px;color:var(--accent);}
+    .brand-accent{color:var(--accent);}
+    .main-nav{display:flex;flex:1;}
+    .nav-link{display:flex;align-items:center;height:68px;font-size:14px;font-weight:600;color:var(--ink-faint);border-bottom:2px solid transparent;margin-right:22px;}
+    .nav-link.active{color:var(--ink);border-bottom-color:var(--accent);}
+    .header-right{display:flex;align-items:center;gap:14px;}
+    .seller-switch{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:100px;border:1px solid var(--border-strong);background:var(--surface);font-size:13px;font-weight:600;}
+    .seller-switch .icon{color:var(--accent);}
+    .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent-strong);font-family:"Archivo",sans-serif;}
+
+    .page{max-width:1080px;margin:0 auto;padding:28px 32px 100px;}
+    .crumb{font-size:12.5px;color:var(--ink-faint);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+    .crumb a{color:var(--ink-faint);}
+    .page-head{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+    .page-title{font-family:"Archivo",sans-serif;font-size:24px;font-weight:800;margin:0;letter-spacing:-0.01em;}
+    .chip{display:inline-flex;align-items:center;gap:5px;font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;padding:4px 10px;border-radius:100px;background:var(--surface);border:1px solid var(--accent);color:var(--accent-strong);}
+
+    .subtabs{display:flex;gap:22px;border-bottom:1px solid var(--border);margin-bottom:22px;}
+    .subtab{font-family:"Archivo",sans-serif;font-size:13px;font-weight:700;color:var(--ink-faint);padding:10px 2px;border-bottom:2px solid transparent;}
+    .subtab.active{color:var(--ink);border-bottom-color:var(--ink);}
+
+    .summary{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;display:flex;gap:32px;margin-bottom:22px;}
+    .summary dt{font-family:"Archivo",sans-serif;font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;}
+    .summary dd{margin:0;font-size:13.5px;font-weight:600;}
+    .summary .edit{margin-left:auto;align-self:center;font-size:12.5px;font-weight:700;}
+
+    .panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:8px;}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px;}
+    .panel-head h2{font-family:"Archivo",sans-serif;font-size:14px;font-weight:800;margin:0;}
+    .panel-head .hint{font-size:12px;color:var(--ink-faint);}
+
+    .prow{display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:10px;}
+    .prow + .prow{border-top:1px solid var(--border);}
+    .prow .grip{color:var(--ink-faint);cursor:grab;}
+    .prow .order{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-faint);width:16px;}
+    .prow .thumb{width:46px;height:46px;border-radius:9px;flex:0 0 auto;}
+    .prow .name{font-size:13.5px;font-weight:600;flex:1;}
+    .prow .price{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink-soft);width:80px;}
+    .prow .remove{color:var(--ink-faint);}
+
+    .prow.dragging{background:var(--surface);box-shadow:var(--shadow-lift);transform:rotate(-1.2deg) scale(1.01);border:1px solid var(--accent);position:relative;z-index:2;border-top:1px solid var(--accent) !important;}
+    .drop-slot{height:6px;margin:2px 18px;border-radius:4px;border:1.5px dashed var(--accent);background:var(--accent-soft);}
+
+    .add-row{display:flex;align-items:center;gap:8px;padding:14px 18px;color:var(--accent-strong);font-weight:700;font-size:13px;font-family:"Archivo",sans-serif;border-top:1px solid var(--border);}
+
+    .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-family:"Archivo",sans-serif;font-size:13.5px;font-weight:700;padding:12px 18px;border-radius:8px;border:none;cursor:pointer;}
+    .btn-primary{background:var(--accent);color:#fff;}
+    .btn-ghost{background:transparent;border:1px solid var(--border-strong);color:var(--ink);}
+  </style>
+</helmet>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="14" r="2" fill="currentColor" stroke="none"/><path d="M8.2 10.2a5.4 5.4 0 0 1 7.6 0"/><path d="M5.5 7.5a9.2 9.2 0 0 1 13 0"/></svg>
+    OnAir<span class="brand-accent">Console</span>
+  </div>
+  <nav class="main-nav">
+    <a class="nav-link active">ライブ一覧</a>
+    <a class="nav-link">新規作成</a>
+    <a class="nav-link">アカウント設定</a>
+  </nav>
+  <div class="header-right">
+    <button class="seller-switch">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1-5h14l1 5"/><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="20" x2="9" y2="13"/><line x1="15" y1="20" x2="15" y2="13"/></svg>
+      宮崎茶房 みやざき本店
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="avatar">宮</div>
+  </div>
+</header>
+
+<div class="page">
+  <div class="crumb"><a>ライブ一覧</a> ／ 母の日ギフト特集 和紅茶飲み比べセット ／ 設定</div>
+  <div class="page-head">
+    <h1 class="page-title">ライブの設定</h1>
+    <span class="chip">配信前 ・ 5/9(土) 20:00</span>
+  </div>
+
+  <div class="subtabs">
+    <div class="subtab">基本情報</div>
+    <div class="subtab active">商品構成</div>
+    <div class="subtab">配信設定</div>
+  </div>
+
+  <div class="summary">
+    <dl><dt>タイトル</dt><dd>母の日ギフト特集 和紅茶飲み比べセット</dd></dl>
+    <dl><dt>配信日時</dt><dd>2026/05/09（土）20:00〜20:45</dd></dl>
+    <dl><dt>リハーサル</dt><dd>パスコード 3390</dd></dl>
+    <dl><dt>リプレイ</dt><dd>公開する</dd></dl>
+    <dl><dt>登録商品</dt><dd>5点</dd></dl>
+    <a class="edit" href="#">基本情報を編集</a>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>商品の並び順</h2>
+      <span class="hint">ドラッグして表示順を変更できます</span>
+    </div>
+
+    <div class="prow">
+      <svg class="icon grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg>
+      <span class="order">01</span>
+      <div class="thumb" style="background:linear-gradient(135deg,#f0e3d6,#cf9f75);"></div>
+      <span class="name">特選和紅茶 ティーバッグ12個入</span>
+      <span class="price">¥980</span>
+      <svg class="icon remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </div>
+
+    <div class="prow dragging">
+      <svg class="icon grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg>
+      <span class="order">02</span>
+      <div class="thumb" style="background:linear-gradient(135deg,#e2d8ce,#a3806a);"></div>
+      <span class="name">ギフト包装済み 詰め合わせ3種</span>
+      <span class="price">¥2,400</span>
+      <svg class="icon remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </div>
+    <div class="drop-slot"></div>
+
+    <div class="prow">
+      <svg class="icon grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg>
+      <span class="order">03</span>
+      <div class="thumb" style="background:linear-gradient(135deg,#dcefe4,#a9cfb8);"></div>
+      <span class="name">静岡産 深蒸し煎茶 100g</span>
+      <span class="price">¥1,200</span>
+      <svg class="icon remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </div>
+
+    <div class="prow">
+      <svg class="icon grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg>
+      <span class="order">04</span>
+      <div class="thumb" style="background:linear-gradient(135deg,#e9e4d8,#b7ac8f);"></div>
+      <span class="name">茶香炉セット</span>
+      <span class="price">¥3,600</span>
+      <svg class="icon remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </div>
+
+    <div class="prow">
+      <svg class="icon grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/></svg>
+      <span class="order">05</span>
+      <div class="thumb" style="background:linear-gradient(135deg,#e7dfc9,#c9b98c);"></div>
+      <span class="name">急須（常滑焼）</span>
+      <span class="price">¥4,800</span>
+      <svg class="icon remove" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </div>
+
+    <div class="add-row">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      商品を追加
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-ghost">キャンセル</button>
+    <button class="btn btn-primary">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg>
+      変更を保存
+    </button>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

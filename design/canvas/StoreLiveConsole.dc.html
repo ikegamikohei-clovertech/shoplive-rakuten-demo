@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#101117; --surface:#1a1c24; --surface-alt:#20222c;
+      --border:#2b2e3a; --border-strong:#3a3d4c;
+      --ink:#eceef3; --ink-soft:#a3a6b3; --ink-faint:#6f7280;
+      --accent:#9490dd; --accent-strong:#b2aeeb; --accent-soft:#26243f;
+      --live:#ff5c5c; --live-soft:#3a1f22;
+      --ok:#3bbf95; --ok-soft:#173229;
+      --warn:#e0a752; --warn-soft:#372c18;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;}
+    .icon{width:16px;height:16px;flex:0 0 auto;}
+    .icon-sm{width:14px;height:14px;}
+
+    .app-header{display:flex;align-items:center;gap:24px;padding:0 32px;height:64px;background:var(--surface);border-bottom:1px solid var(--border);}
+    .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;font-family:"Archivo",sans-serif;}
+    .brand .icon{width:20px;height:20px;color:var(--accent);}
+    .brand-accent{color:var(--accent-strong);}
+    .store-name{font-size:13px;color:var(--ink-soft);font-weight:600;border-left:1px solid var(--border);padding-left:20px;}
+    .live-timer{margin-left:auto;display:flex;align-items:center;gap:10px;background:var(--live-soft);border:1px solid rgba(255,92,92,.35);padding:8px 16px;border-radius:100px;}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 4px rgba(255,92,92,.18);}
+    .live-label{font-family:"Archivo",sans-serif;font-size:12px;font-weight:800;letter-spacing:.06em;color:var(--live);}
+    .live-time{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--ink);}
+
+    .page{max-width:1400px;margin:0 auto;padding:26px 32px 60px;}
+    .layout{display:grid;grid-template-columns:1fr 380px;gap:24px;align-items:start;}
+
+    .stage{background:#000;border-radius:16px;overflow:hidden;position:relative;height:520px;display:flex;flex-direction:column;justify-content:space-between;}
+    .stage-noise{position:absolute;inset:0;background:
+      radial-gradient(circle at 25% 30%, rgba(148,144,221,.18), transparent 45%),
+      radial-gradient(circle at 75% 70%, rgba(255,92,92,.12), transparent 45%);}
+    .stage-top{position:relative;display:flex;justify-content:space-between;padding:18px;}
+    .stage-live{display:flex;align-items:center;gap:6px;background:var(--live);color:#fff;font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;letter-spacing:.05em;padding:5px 10px;border-radius:5px;}
+    .stage-live .dot{width:6px;height:6px;border-radius:50%;background:#fff;}
+    .stage-title{position:relative;padding:0 22px 22px;}
+    .stage-title h2{font-family:"Archivo",sans-serif;font-size:20px;font-weight:800;margin:0 0 8px;max-width:70%;line-height:1.4;}
+    .stage-meta{display:flex;align-items:center;gap:16px;font-size:12.5px;color:#d7d8e0;}
+    .stage-meta span{display:flex;align-items:center;gap:6px;}
+    .waveform{position:relative;display:flex;align-items:flex-end;gap:4px;height:52px;padding:0 22px 14px;}
+    .waveform i{display:block;width:5px;border-radius:3px;background:rgba(148,144,221,.55);}
+
+    .stage-actions{display:flex;gap:12px;margin-top:16px;}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-family:"Archivo",sans-serif;font-size:13.5px;font-weight:700;padding:12px 20px;border-radius:9px;border:1px solid transparent;cursor:pointer;}
+    .btn-end{background:var(--live);color:#fff;}
+    .btn-outline{background:transparent;border:1px solid var(--border-strong);color:var(--ink);}
+
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+    .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+    .stat .k{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-faint);font-weight:600;margin-bottom:8px;}
+    .stat .k .icon{color:var(--accent-strong);width:13px;height:13px;}
+    .stat .v{font-family:"IBM Plex Mono",monospace;font-size:22px;font-weight:600;}
+    .bars{display:flex;align-items:flex-end;gap:2px;height:16px;margin-top:8px;}
+    .bars i{width:4px;background:var(--accent);opacity:.5;border-radius:2px;}
+    .bars i:last-child{opacity:1;}
+
+    .side-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:8px;}
+    .side-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;}
+    .side-head h3{font-family:"Archivo",sans-serif;font-size:13px;font-weight:800;margin:0;}
+    .side-head span{font-size:11.5px;color:var(--ink-faint);}
+
+    .prow{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;}
+    .prow + .prow{border-top:1px solid var(--border);}
+    .prow.now{background:var(--accent-soft);}
+    .prow .thumb{width:42px;height:42px;border-radius:8px;flex:0 0 auto;}
+    .prow .meta{flex:1;min-width:0;}
+    .prow .name{font-size:12.5px;font-weight:600;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .prow .sub{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-faint);}
+    .dot{width:6px;height:6px;border-radius:50%;}
+    .dot.ok{background:var(--ok);}
+    .dot.warn{background:var(--warn);}
+    .dot.out{background:var(--ink-faint);}
+    .price{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);width:60px;text-align:right;}
+
+    .toggle{width:38px;height:22px;border-radius:100px;background:var(--border-strong);position:relative;flex:0 0 auto;}
+    .toggle.on{background:var(--live);}
+    .toggle i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;}
+    .toggle.on i{left:18px;}
+    .now-label{font-family:"Archivo",sans-serif;font-size:9.5px;font-weight:800;color:var(--live);letter-spacing:.04em;margin-top:3px;}
+  </style>
+</helmet>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="14" r="2" fill="currentColor" stroke="none"/><path d="M8.2 10.2a5.4 5.4 0 0 1 7.6 0"/><path d="M5.5 7.5a9.2 9.2 0 0 1 13 0"/></svg>
+    OnAir<span class="brand-accent">Console</span>
+  </div>
+  <div class="store-name">宮崎茶房 みやざき本店</div>
+  <div class="live-timer">
+    <span class="live-dot"></span>
+    <span class="live-label">配信中</span>
+    <span class="live-time">00:14:32</span>
+  </div>
+</header>
+
+<div class="page">
+  <div class="layout">
+    <div>
+      <div class="stage">
+        <div class="stage-noise"></div>
+        <div class="stage-top">
+          <span class="stage-live"><span class="dot"></span>LIVE</span>
+          <span class="stage-meta"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>1,284人視聴中</span>
+        </div>
+        <div class="waveform">
+          <i style="height:18px"></i><i style="height:32px"></i><i style="height:14px"></i><i style="height:40px"></i><i style="height:22px"></i><i style="height:36px"></i><i style="height:16px"></i><i style="height:28px"></i><i style="height:44px"></i><i style="height:20px"></i><i style="height:34px"></i><i style="height:12px"></i><i style="height:38px"></i><i style="height:24px"></i><i style="height:30px"></i>
+        </div>
+        <div class="stage-title">
+          <h2>新茶入荷記念！おうちで楽しむ本格煎茶の淹れ方</h2>
+          <div class="stage-meta">
+            <span class="font-m" style="font-family:'IBM Plex Mono',monospace;">campaignKey: lv_4tz8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-actions">
+        <button class="btn btn-end">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+          配信を終了する
+        </button>
+        <button class="btn btn-outline">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+          プロンプター
+        </button>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="k"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>視聴者数</div>
+          <div class="v">1,284</div>
+          <div class="bars"><i style="height:5px"></i><i style="height:8px"></i><i style="height:6px"></i><i style="height:11px"></i><i style="height:9px"></i><i style="height:14px"></i><i style="height:16px"></i></div>
+        </div>
+        <div class="stat">
+          <div class="k"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-4.5-3-9-6.5-9-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-4.5 8-9 11z"/></svg>いいね</div>
+          <div class="v">612</div>
+          <div class="bars"><i style="height:4px"></i><i style="height:6px"></i><i style="height:9px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i><i style="height:15px"></i></div>
+        </div>
+        <div class="stat">
+          <div class="k"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="11" rx="2"/><polyline points="8 16 8 20 12 16"/></svg>チャット</div>
+          <div class="v">348</div>
+          <div class="bars"><i style="height:6px"></i><i style="height:5px"></i><i style="height:10px"></i><i style="height:8px"></i><i style="height:13px"></i><i style="height:9px"></i><i style="height:16px"></i></div>
+        </div>
+        <div class="stat">
+          <div class="k"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3l6 15 2-6 6-2-14-7z"/></svg>商品クリック</div>
+          <div class="v">96</div>
+          <div class="bars"><i style="height:3px"></i><i style="height:5px"></i><i style="height:4px"></i><i style="height:8px"></i><i style="height:6px"></i><i style="height:10px"></i><i style="height:13px"></i></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-panel">
+      <div class="side-head">
+        <h3>商品管理</h3>
+        <span>4点</span>
+      </div>
+
+      <div class="prow now">
+        <div class="thumb" style="background:linear-gradient(135deg,#dcefe4,#a9cfb8);"></div>
+        <div class="meta">
+          <div class="name">静岡産 深蒸し煎茶 100g</div>
+          <div class="sub"><span class="dot ok"></span>在庫あり</div>
+          <div class="now-label">● NOW 表示中</div>
+        </div>
+        <span class="price">¥1,200</span>
+        <div class="toggle on"><i></i></div>
+      </div>
+
+      <div class="prow">
+        <div class="thumb" style="background:linear-gradient(135deg,#f0e3d6,#cf9f75);"></div>
+        <div class="meta">
+          <div class="name">特選和紅茶 ティーバッグ12個入</div>
+          <div class="sub"><span class="dot warn"></span>残りわずか</div>
+        </div>
+        <span class="price">¥980</span>
+        <div class="toggle"><i></i></div>
+      </div>
+
+      <div class="prow">
+        <div class="thumb" style="background:linear-gradient(135deg,#e9e4d8,#b7ac8f);"></div>
+        <div class="meta">
+          <div class="name">茶香炉セット</div>
+          <div class="sub"><span class="dot ok"></span>在庫あり</div>
+        </div>
+        <span class="price">¥3,600</span>
+        <div class="toggle"><i></i></div>
+      </div>
+
+      <div class="prow" style="opacity:.5;">
+        <div class="thumb" style="background:linear-gradient(135deg,#e2d8ce,#a3806a);"></div>
+        <div class="meta">
+          <div class="name">急須（常滑焼）</div>
+          <div class="sub"><span class="dot out"></span>売り切れ</div>
+        </div>
+        <span class="price">¥4,800</span>
+        <div class="toggle"><i></i></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f5f2; --surface:#ffffff; --surface-alt:#eeeee9;
+      --border:#e1e1da; --border-strong:#cfcfc6;
+      --ink:#1c1e24; --ink-soft:#5b5e69; --ink-faint:#9195a0;
+      --accent:#3d3a7a; --accent-strong:#2c295c; --accent-soft:#ecebf6;
+      --pending:#a06a1f; --pending-soft:#f5ecd9;
+      --shadow-card:0 1px 2px rgba(28,30,36,.05),0 10px 28px rgba(28,30,36,.08);
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;}
+    a{color:var(--accent-strong);text-decoration:none;font-weight:600;}
+    .icon{width:16px;height:16px;flex:0 0 auto;}
+    .icon-sm{width:14px;height:14px;}
+
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 32px;height:64px;border-bottom:1px solid var(--border);}
+    .brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;font-family:"Archivo",sans-serif;}
+    .brand .icon{width:22px;height:22px;color:var(--accent);}
+    .brand-accent{color:var(--accent);}
+    .topbar-right{font-size:13px;color:var(--ink-soft);}
+
+    .wrap{max-width:640px;margin:0 auto;padding:56px 24px 100px;}
+    .eyebrow{display:inline-flex;align-items:center;gap:6px;font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-strong);background:var(--accent-soft);padding:5px 10px;border-radius:5px;margin-bottom:16px;}
+    h1{font-family:"Archivo",sans-serif;font-size:28px;font-weight:800;margin:0 0 8px;letter-spacing:-0.01em;}
+    .lede{font-size:14px;color:var(--ink-soft);margin:0 0 32px;}
+
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:32px;}
+    .field{margin-bottom:22px;}
+    .field label{display:block;font-family:"Archivo",sans-serif;font-size:12.5px;font-weight:700;margin-bottom:8px;color:var(--ink);}
+    .field .hint{font-weight:500;color:var(--ink-faint);margin-left:6px;}
+    .input, .textarea{width:100%;border:1px solid var(--border-strong);border-radius:8px;padding:11px 14px;font-size:14px;font-family:inherit;color:var(--ink);background:var(--surface);}
+    .textarea{resize:none;line-height:1.7;}
+    .char-count{text-align:right;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-faint);margin-top:6px;}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:"Archivo",sans-serif;font-size:14px;font-weight:700;padding:13px 20px;border-radius:8px;border:none;width:100%;cursor:pointer;}
+    .btn-primary{background:var(--accent);color:#fff;}
+    .note{font-size:12px;color:var(--ink-faint);text-align:center;margin-top:14px;line-height:1.6;}
+
+    .status-panel{margin-top:36px;}
+    .status-panel .head{display:flex;align-items:center;gap:8px;font-family:"Archivo",sans-serif;font-size:12.5px;font-weight:700;color:var(--ink-soft);margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em;}
+    .status-row{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;}
+    .status-row .name{font-weight:700;font-size:13.5px;flex:1;}
+    .status-row .date{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-faint);}
+    .chip{display:inline-flex;align-items:center;gap:5px;font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;padding:4px 10px;border-radius:100px;background:var(--pending-soft);color:var(--pending);}
+    .chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+  </style>
+</helmet>
+
+<div class="topbar">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="14" r="2" fill="currentColor" stroke="none"/><path d="M8.2 10.2a5.4 5.4 0 0 1 7.6 0"/><path d="M5.5 7.5a9.2 9.2 0 0 1 13 0"/></svg>
+    OnAir<span class="brand-accent">Console</span>
+  </div>
+  <div class="topbar-right">すでにアカウントをお持ちですか？ <a href="#">ログイン</a></div>
+</div>
+
+<div class="wrap">
+  <span class="eyebrow">楽天市場 出店店舗様向け</span>
+  <h1>ライブ配信アカウントを開設する</h1>
+  <p class="lede">店舗情報とライブ配信の概要をご入力ください。楽天市場担当者が内容を確認し、通常1〜2営業日以内に審査結果をご連絡します。</p>
+
+  <div class="card">
+    <div class="field">
+      <label>店舗名</label>
+      <input class="input" value="宮崎茶房 みやざき本店">
+    </div>
+    <div class="field">
+      <label>店舗URL <span class="hint">楽天市場の店舗ページ</span></label>
+      <input class="input" value="https://www.rakuten.co.jp/miyazaki-chabo/">
+    </div>
+    <div class="field">
+      <label>ライブ配信の概要 <span class="hint">配信内容・頻度・担当者などをご記入ください</span></label>
+      <textarea class="textarea" rows="5">国産和紅茶・煎茶の実演販売と淹れ方講座を中心に、週2回（土・水）の定期配信を予定しています。担当は茶道歴10年のスタッフが務め、試飲の様子や茶葉の産地紹介も交えて配信します。</textarea>
+      <div class="char-count">86 / 400文字</div>
+    </div>
+    <button class="btn btn-primary">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg>
+      審査に申請する
+    </button>
+    <p class="note">申請いただいた内容は楽天市場運営事務局にて確認します。<br>審査状況はこの画面から確認できます。</p>
+  </div>
+
+  <div class="status-panel">
+    <div class="head">申請状況</div>
+    <div class="status-row">
+      <span class="name">宮崎茶房 みやざき本店</span>
+      <span class="date">申請日 2026/04/28</span>
+      <span class="chip"><span class="chip-dot"></span>審査中</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

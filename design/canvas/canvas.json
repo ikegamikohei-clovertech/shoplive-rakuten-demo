@@ -1,0 +1,17 @@
+{
+  "artboards": [
+    { "file": "StoreSignup.dc.html", "x": 0, "y": 0, "w": 1440, "h": 1180 },
+    { "file": "Main.dc.html", "x": 1540, "y": 0, "w": 1440, "h": 1020 },
+    { "file": "StoreLiveNew.dc.html", "x": 3080, "y": 0, "w": 1440, "h": 1320 },
+    { "file": "StoreLiveSettings.dc.html", "x": 4620, "y": 0, "w": 1440, "h": 1060 },
+    { "file": "StoreLiveConsole.dc.html", "x": 6160, "y": 0, "w": 1440, "h": 900 },
+    { "file": "AdminAccountApprovals.dc.html", "x": 0, "y": 1330, "w": 1440, "h": 720 },
+    { "file": "AdminOnAir.dc.html", "x": 1540, "y": 1330, "w": 1440, "h": 700 },
+    { "file": "AdminLiveApprovals.dc.html", "x": 3080, "y": 1330, "w": 1440, "h": 900 }
+  ],
+  "annotations": [
+    { "id": "row-store", "x": 0, "y": -70, "w": 500, "text": "店舗用画面\nS-1 アカウント作成 → S-2 ライブ一覧 → S-3 新規作成 → S-4 設定 → S-5 配信コンソール" },
+    { "id": "row-admin", "x": 0, "y": 1260, "w": 500, "text": "楽天市場管理者用画面\nA-1 アカウント申請承認 / A-2 オンエア中一覧 / A-3 ライブ申請承認" }
+  ],
+  "launch": { "view": "canvas" }
+}

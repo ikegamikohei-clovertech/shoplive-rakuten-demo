@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f5f2; --surface:#ffffff; --surface-alt:#eeeee9;
+      --border:#e1e1da; --border-strong:#cfcfc6;
+      --ink:#1c1e24; --ink-soft:#5b5e69; --ink-faint:#9195a0;
+      --accent:#3d3a7a; --accent-strong:#2c295c; --accent-soft:#ecebf6;
+      --approved:#1f7a63; --approved-soft:#e2f1eb;
+      --pending:#a06a1f; --pending-soft:#f5ecd9;
+      --muted:#8a8d97; --muted-soft:#eceeef;
+      --shadow-card:0 1px 2px rgba(28,30,36,.05),0 6px 18px rgba(28,30,36,.07);
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;}
+    a{color:var(--accent-strong);text-decoration:none;}
+    .icon{width:16px;height:16px;flex:0 0 auto;}
+    .icon-sm{width:14px;height:14px;}
+
+    .app-header{display:flex;align-items:center;gap:32px;padding:0 32px;height:68px;background:var(--surface);border-bottom:1px solid var(--border);}
+    .brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;font-family:"Archivo",sans-serif;}
+    .brand .icon{width:22px;height:22px;color:var(--accent);}
+    .brand-accent{color:var(--accent);}
+    .main-nav{display:flex;flex:1;}
+    .nav-link{display:flex;align-items:center;height:68px;font-size:14px;font-weight:600;color:var(--ink-faint);border-bottom:2px solid transparent;margin-right:22px;}
+    .nav-link.active{color:var(--ink);border-bottom-color:var(--accent);}
+    .header-right{display:flex;align-items:center;gap:14px;}
+    .role-badge{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:100px;background:var(--surface-alt);font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+    .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent-strong);font-family:"Archivo",sans-serif;}
+
+    .page{max-width:1400px;margin:0 auto;padding:32px 32px 90px;}
+    .page-title{font-family:"Archivo",sans-serif;font-size:26px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em;}
+    .page-sub{font-size:13.5px;color:var(--ink-soft);margin:0 0 24px;}
+
+    .layout{display:grid;grid-template-columns:1fr 400px;gap:24px;align-items:start;}
+
+    .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);overflow:hidden;}
+    table{border-collapse:collapse;width:100%;font-size:13px;}
+    th{text-align:left;font-family:"Archivo",sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);background:var(--surface-alt);padding:12px 16px;}
+    td{padding:12px 16px;border-top:1px solid var(--border);vertical-align:middle;}
+    tr.selected td{background:var(--accent-soft);}
+    .thumb-cell{width:52px;height:52px;border-radius:9px;}
+    .title-cell{font-weight:700;}
+    .store-sub{display:block;font-size:11.5px;color:var(--ink-faint);font-weight:500;margin-top:2px;}
+    .date-cell{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);white-space:nowrap;}
+    .count-cell{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);}
+    .chip{display:inline-flex;align-items:center;gap:5px;font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;padding:4px 10px;border-radius:100px;white-space:nowrap;}
+    .chip-pending{background:var(--pending-soft);color:var(--pending);}
+    .chip-approved{background:var(--approved-soft);color:var(--approved);}
+    .chip-rejected{background:var(--muted-soft);color:var(--muted);}
+
+    .drawer{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-card);padding:24px;position:sticky;top:24px;}
+    .drawer-eyebrow{font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pending);margin-bottom:10px;}
+    .drawer-thumb{height:150px;border-radius:10px;background:linear-gradient(135deg,#e7dfc9,#c9b98c);margin-bottom:14px;}
+    .drawer h2{font-family:"Archivo",sans-serif;font-size:17px;font-weight:800;margin:0 0 4px;line-height:1.4;}
+    .drawer .store{font-size:12.5px;color:var(--ink-faint);margin-bottom:14px;}
+    .drawer dl{display:grid;grid-template-columns:90px 1fr;gap:8px 12px;font-size:12.5px;margin-bottom:16px;}
+    .drawer dt{color:var(--ink-faint);font-weight:600;}
+    .drawer dd{margin:0;}
+
+    .plist{border-top:1px solid var(--border);padding-top:14px;margin-bottom:18px;}
+    .plist-head{font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px;}
+    .prow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:12.5px;}
+    .prow .thumb{width:32px;height:32px;border-radius:6px;flex:0 0 auto;}
+    .prow .name{flex:1;}
+    .prow .price{font-family:"IBM Plex Mono",monospace;color:var(--ink-soft);}
+
+    .drawer-actions{display:flex;gap:10px;}
+    .btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:"Archivo",sans-serif;font-size:13.5px;font-weight:700;padding:12px 14px;border-radius:8px;border:1px solid transparent;cursor:pointer;}
+    .btn-approve{background:var(--approved);color:#fff;}
+    .btn-reject{background:transparent;border-color:var(--border-strong);color:var(--ink);}
+  </style>
+</helmet>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="14" r="2" fill="currentColor" stroke="none"/><path d="M8.2 10.2a5.4 5.4 0 0 1 7.6 0"/><path d="M5.5 7.5a9.2 9.2 0 0 1 13 0"/></svg>
+    OnAir<span class="brand-accent">Console</span>
+  </div>
+  <nav class="main-nav">
+    <a class="nav-link">アカウント申請</a>
+    <a class="nav-link">オンエア中のライブ</a>
+    <a class="nav-link active">ライブ申請</a>
+  </nav>
+  <div class="header-right">
+    <div class="role-badge">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      楽天市場 運営事務局
+    </div>
+    <div class="avatar">運</div>
+  </div>
+</header>
+
+<div class="page">
+  <h1 class="page-title">新規ライブ申請</h1>
+  <p class="page-sub">店舗が申請したライブ内容を確認し、承認・却下します。承認するとShoplive上のキャンペーンが該当店舗へ引き渡されます。</p>
+
+  <div class="layout">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th></th><th>ライブタイトル</th><th>配信予定日時</th><th>商品数</th><th>ステータス</th></tr>
+        </thead>
+        <tbody>
+          <tr class="selected">
+            <td><div class="thumb-cell" style="background:linear-gradient(135deg,#e7dfc9,#c9b98c);"></div></td>
+            <td class="title-cell">夏の福袋 数量限定先行販売<span class="store-sub">宮崎茶房 みやざき本店</span></td>
+            <td class="date-cell">5/20(水) 19:00</td>
+            <td class="count-cell">6点</td>
+            <td><span class="chip chip-pending">審査中</span></td>
+          </tr>
+          <tr>
+            <td><div class="thumb-cell" style="background:linear-gradient(135deg,#d9e3df,#8fada4);"></div></td>
+            <td class="title-cell">新生活応援 ワンプレート食器セット特集<span class="store-sub">キッチン雑貨SUNNY STORE</span></td>
+            <td class="date-cell">5/18(月) 20:00</td>
+            <td class="count-cell">10点</td>
+            <td><span class="chip chip-pending">審査中</span></td>
+          </tr>
+          <tr>
+            <td><div class="thumb-cell" style="background:linear-gradient(135deg,#efe0d6,#d0a98a);"></div></td>
+            <td class="title-cell">ヴィンテージ食器 一点物オークション<span class="store-sub">北欧デザイン雑貨 Nordiska</span></td>
+            <td class="date-cell">5/15(金) 21:00</td>
+            <td class="count-cell">4点</td>
+            <td><span class="chip chip-rejected">却下</span></td>
+          </tr>
+          <tr>
+            <td><div class="thumb-cell" style="background:linear-gradient(135deg,#e9e4d8,#b7ac8f);"></div></td>
+            <td class="title-cell">母の日ギフト コーヒー豆飲み比べ<span class="store-sub">自家焙煎珈琲 まめや</span></td>
+            <td class="date-cell">5/10(日) 18:00</td>
+            <td class="count-cell">5点</td>
+            <td><span class="chip chip-approved">承認</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="drawer">
+      <div class="drawer-eyebrow">審査中の申請</div>
+      <div class="drawer-thumb"></div>
+      <h2>夏の福袋 数量限定先行販売</h2>
+      <div class="store">宮崎茶房 みやざき本店</div>
+      <dl>
+        <dt>配信予定日時</dt><dd>2026/05/20（水）19:00〜</dd>
+        <dt>申請日</dt><dd>2026/04/30</dd>
+      </dl>
+
+      <div class="plist">
+        <div class="plist-head">登録商品（6点）</div>
+        <div class="prow">
+          <div class="thumb" style="background:linear-gradient(135deg,#dcefe4,#a9cfb8);"></div>
+          <span class="name">静岡産 深蒸し煎茶 100g</span>
+          <span class="price">¥1,200</span>
+        </div>
+        <div class="prow">
+          <div class="thumb" style="background:linear-gradient(135deg,#f0e3d6,#cf9f75);"></div>
+          <span class="name">特選和紅茶 ティーバッグ12個入</span>
+          <span class="price">¥980</span>
+        </div>
+        <div class="prow">
+          <div class="thumb" style="background:linear-gradient(135deg,#e2d8ce,#a3806a);"></div>
+          <span class="name">夏季限定 福袋セット</span>
+          <span class="price">¥5,000</span>
+        </div>
+        <div class="prow">
+          <div class="thumb" style="background:linear-gradient(135deg,#e9e4d8,#b7ac8f);"></div>
+          <span class="name">茶香炉セット</span>
+          <span class="price">¥3,600</span>
+        </div>
+        <div class="prow">
+          <div class="thumb" style="background:linear-gradient(135deg,#e7dfc9,#c9b98c);"></div>
+          <span class="name">定番ほうじ茶ブレンド 150g</span>
+          <span class="price">¥1,100</span>
+        </div>
+        <div class="prow">
+          <div class="thumb" style="background:linear-gradient(135deg,#e2d8ce,#a3806a);"></div>
+          <span class="name">急須（常滑焼）</span>
+          <span class="price">¥4,800</span>
+        </div>
+      </div>
+
+      <div class="drawer-actions">
+        <button class="btn btn-reject">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+          却下する
+        </button>
+        <button class="btn btn-approve">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="5 13 10 18 19 6"/></svg>
+          承認する
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

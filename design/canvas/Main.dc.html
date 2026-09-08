@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f5f2; --surface:#ffffff; --surface-alt:#eeeee9;
+      --border:#e1e1da; --border-strong:#cfcfc6;
+      --ink:#1c1e24; --ink-soft:#5b5e69; --ink-faint:#9195a0;
+      --accent:#3d3a7a; --accent-strong:#2c295c; --accent-soft:#ecebf6;
+      --live:#c23f3f; --live-soft:#f8e8e6;
+      --approved:#1f7a63; --approved-soft:#e2f1eb;
+      --pending:#a06a1f; --pending-soft:#f5ecd9;
+      --muted:#8a8d97; --muted-soft:#eceeef;
+      --shadow-card:0 1px 2px rgba(28,30,36,.05),0 6px 18px rgba(28,30,36,.07);
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;}
+    a{color:var(--accent-strong);text-decoration:none;}
+    a:hover{color:var(--accent);}
+    .font-d{font-family:"Archivo","Noto Sans JP",sans-serif;}
+    .font-m{font-family:"IBM Plex Mono",monospace;}
+    .icon{width:16px;height:16px;flex:0 0 auto;}
+    .icon-sm{width:14px;height:14px;}
+
+    .app-header{display:flex;align-items:center;gap:32px;padding:0 32px;height:68px;background:var(--surface);border-bottom:1px solid var(--border);}
+    .brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;letter-spacing:-0.01em;color:var(--ink);}
+    .brand .icon{width:22px;height:22px;color:var(--accent);}
+    .brand-accent{color:var(--accent);}
+    .main-nav{display:flex;gap:6px;flex:1;}
+    .nav-link{display:flex;align-items:center;height:68px;padding:0 4px;font-size:14px;font-weight:600;color:var(--ink-faint);border-bottom:2px solid transparent;margin-right:22px;}
+    .nav-link.active{color:var(--ink);border-bottom-color:var(--accent);}
+    .header-right{display:flex;align-items:center;gap:14px;}
+    .seller-switch{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:100px;border:1px solid var(--border-strong);background:var(--surface);font-size:13px;font-weight:600;color:var(--ink);}
+    .seller-switch .icon{color:var(--accent);}
+    .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent-strong);font-family:"Archivo",sans-serif;}
+
+    .page{max-width:1376px;margin:0 auto;padding:32px 32px 80px;}
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;}
+    .page-title{font-family:"Archivo",sans-serif;font-size:26px;font-weight:800;margin:0 0 6px;letter-spacing:-0.01em;}
+    .page-sub{font-size:13.5px;color:var(--ink-soft);margin:0;}
+    .btn{display:inline-flex;align-items:center;gap:8px;font-family:"Archivo",sans-serif;font-size:13.5px;font-weight:700;padding:11px 20px;border-radius:8px;border:1px solid transparent;cursor:pointer;}
+    .btn-primary{background:var(--accent);color:#fff;}
+    .btn-primary .icon{color:#fff;}
+
+    .tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--border);}
+    .tab{font-family:"Archivo",sans-serif;font-size:13px;font-weight:700;color:var(--ink-faint);padding:10px 16px;border-bottom:2px solid transparent;display:flex;align-items:center;gap:8px;}
+    .tab.active{color:var(--ink);border-bottom-color:var(--ink);}
+    .tab-count{font-family:"IBM Plex Mono",monospace;font-size:11px;background:var(--muted-soft);color:var(--ink-soft);border-radius:100px;padding:1px 7px;}
+    .tab.active .tab-count{background:var(--accent-soft);color:var(--accent-strong);}
+
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-card);display:flex;flex-direction:column;}
+    .thumb{position:relative;height:150px;display:flex;align-items:flex-end;padding:12px;}
+    .thumb-a{background:linear-gradient(135deg,#e7dfc9,#c9b98c);}
+    .thumb-b{background:linear-gradient(135deg,#d9e3df,#8fada4);}
+    .thumb-c{background:linear-gradient(135deg,#efe0d6,#d0a98a);}
+    .badge{display:inline-flex;align-items:center;gap:5px;font-family:"Archivo",sans-serif;font-size:11px;font-weight:800;letter-spacing:.03em;padding:4px 9px;border-radius:100px;position:absolute;top:12px;left:12px;}
+    .badge-live{background:var(--live);color:#fff;}
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:#fff;}
+    .badge-scheduled{background:var(--surface);color:var(--accent-strong);border:1px solid var(--accent);}
+    .badge-pending{background:var(--pending-soft);color:var(--pending);}
+    .badge-ended{background:rgba(28,30,36,.55);color:#fff;}
+    .card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1;}
+    .card-title{font-size:14.5px;font-weight:700;line-height:1.4;margin:0;}
+    .card-meta{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);}
+    .card-meta .icon{color:var(--ink-faint);}
+    .card-stats{display:flex;gap:14px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);border-top:1px dashed var(--border);padding-top:10px;}
+    .card-stats span{display:flex;align-items:center;gap:4px;}
+    .card-stats .icon{color:var(--ink-faint);width:13px;height:13px;}
+    .card-actions{display:flex;gap:8px;margin-top:auto;}
+    .card-actions a{font-size:12.5px;font-weight:700;font-family:"Archivo",sans-serif;padding:7px 0;flex:1;text-align:center;border-radius:6px;border:1px solid var(--border-strong);color:var(--ink);}
+    .card-actions a.primary{background:var(--accent-soft);border-color:transparent;color:var(--accent-strong);}
+  </style>
+</helmet>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="14" r="2" fill="currentColor" stroke="none"/><path d="M8.2 10.2a5.4 5.4 0 0 1 7.6 0"/><path d="M5.5 7.5a9.2 9.2 0 0 1 13 0"/></svg>
+    OnAir<span class="brand-accent">Console</span>
+  </div>
+  <nav class="main-nav">
+    <a class="nav-link active">ライブ一覧</a>
+    <a class="nav-link">新規作成</a>
+    <a class="nav-link">アカウント設定</a>
+  </nav>
+  <div class="header-right">
+    <button class="seller-switch">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1-5h14l1 5"/><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/><line x1="4" y1="9" x2="20" y2="9"/><line x1="9" y1="20" x2="9" y2="13"/><line x1="15" y1="20" x2="15" y2="13"/></svg>
+      宮崎茶房 みやざき本店
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="avatar">宮</div>
+  </div>
+</header>
+
+<div class="page">
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">ライブ一覧</h1>
+      <p class="page-sub">宮崎茶房 みやざき本店が配信するライブの申請状況・配信状況をまとめて確認できます。</p>
+    </div>
+    <button class="btn btn-primary">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      新規ライブを作成
+    </button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active">すべて <span class="tab-count">6</span></div>
+    <div class="tab">審査中 <span class="tab-count">2</span></div>
+    <div class="tab">配信前 <span class="tab-count">2</span></div>
+    <div class="tab">配信中 <span class="tab-count">1</span></div>
+    <div class="tab">終了 <span class="tab-count">1</span></div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="thumb thumb-a">
+        <span class="badge badge-live"><span class="badge-dot"></span>LIVE 14:02〜</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">新茶入荷記念！おうちで楽しむ本格煎茶の淹れ方</p>
+        <div class="card-meta">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 6 19"/></svg>
+          商品 4点掲載中
+        </div>
+        <div class="card-stats">
+          <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>1,284</span>
+          <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-4.5-3-9-6.5-9-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-4.5 8-9 11z"/></svg>612</span>
+        </div>
+        <div class="card-actions">
+          <a class="primary" href="#">配信コンソールを開く</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="thumb thumb-b">
+        <span class="badge badge-scheduled">配信前 ・ 5/9(土) 20:00</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">母の日ギフト特集 和紅茶飲み比べセット</p>
+        <div class="card-meta">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 6 19"/></svg>
+          商品 8点掲載中
+        </div>
+        <div class="card-stats">
+          <span class="font-m">campaignKey: lv_9k2m</span>
+        </div>
+        <div class="card-actions">
+          <a href="#">設定</a>
+          <a class="primary" href="#">リハーサル</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="thumb thumb-c">
+        <span class="badge badge-pending">審査中 ・ 申請日 4/28</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">定番ほうじ茶ブレンド 新パッケージお披露目</p>
+        <div class="card-meta">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 6 19"/></svg>
+          商品 5点掲載予定
+        </div>
+        <div class="card-stats">
+          <span>楽天市場管理者の承認待ちです</span>
+        </div>
+        <div class="card-actions">
+          <a href="#">申請内容を確認</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="thumb thumb-b" style="background:linear-gradient(135deg,#dfe6e9,#a7b6c2);">
+        <span class="badge badge-ended">終了 ・ 4/20実施</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">水出し緑茶キャンペーン LIVE</p>
+        <div class="card-meta">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 6 19"/></svg>
+          商品 6点掲載
+        </div>
+        <div class="card-stats">
+          <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>3,502</span>
+          <span><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-4.5-3-9-6.5-9-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-4.5 8-9 11z"/></svg>612</span>
+        </div>
+        <div class="card-actions">
+          <a href="#">統計を見る</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="thumb thumb-a" style="background:linear-gradient(135deg,#f0e6cf,#d8c193);">
+        <span class="badge badge-pending">審査中 ・ 申請日 4/30</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">夏の福袋 数量限定先行販売</p>
+        <div class="card-meta">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 6 19"/></svg>
+          商品 6点掲載予定
+        </div>
+        <div class="card-stats">
+          <span>楽天市場管理者の承認待ちです</span>
+        </div>
+        <div class="card-actions">
+          <a href="#">申請内容を確認</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="thumb thumb-c" style="background:linear-gradient(135deg,#e9ded0,#b99b7c);">
+        <span class="badge badge-scheduled">配信前 ・ 5/15(木) 19:30</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">定期便会員限定 舞台裏配信</p>
+        <div class="card-meta">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><polyline points="21 16 15 10 6 19"/></svg>
+          商品 3点掲載中
+        </div>
+        <div class="card-stats">
+          <span class="font-m">campaignKey: lv_7bq1</span>
+        </div>
+        <div class="card-actions">
+          <a href="#">設定</a>
+          <a class="primary" href="#">リハーサル</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>

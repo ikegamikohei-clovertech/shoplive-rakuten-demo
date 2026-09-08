@@ -1,0 +1,781 @@
+<!-- OnAir Console design spec -->
+<title>OnAir Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f7f7f4;
+    --surface: #ffffff;
+    --surface-alt: #eeeee9;
+    --ink: #1c1e24;
+    --ink-soft: #5b5e69;
+    --ink-faint: #8b8e98;
+    --border: #dedfda;
+    --accent: #3d3a7a;
+    --accent-strong: #2c295c;
+    --accent-soft: #ecebf6;
+    --live: #c23f3f;
+    --live-soft: #f8e8e6;
+    --pending: #a06a1f;
+    --pending-soft: #f5ecd9;
+    --approved: #1f7a63;
+    --approved-soft: #e2f1eb;
+    --code-bg: #eeede6;
+    --shadow: 0 1px 2px rgba(28,30,36,0.06), 0 6px 20px rgba(28,30,36,0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14151b;
+      --surface: #1b1d25;
+      --surface-alt: #21232d;
+      --ink: #e8e8ec;
+      --ink-soft: #a3a6b1;
+      --ink-faint: #747782;
+      --border: #2d2f3a;
+      --accent: #9490dd;
+      --accent-strong: #b2aeeb;
+      --accent-soft: #262244;
+      --live: #e08585;
+      --live-soft: #3a2222;
+      --pending: #dcac5e;
+      --pending-soft: #372c18;
+      --approved: #64c0a6;
+      --approved-soft: #16332b;
+      --code-bg: #1f212a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14151b;
+    --surface: #1b1d25;
+    --surface-alt: #21232d;
+    --ink: #e8e8ec;
+    --ink-soft: #a3a6b1;
+    --ink-faint: #747782;
+    --border: #2d2f3a;
+    --accent: #9490dd;
+    --accent-strong: #b2aeeb;
+    --accent-soft: #262244;
+    --live: #e08585;
+    --live-soft: #3a2222;
+    --pending: #dcac5e;
+    --pending-soft: #372c18;
+    --approved: #64c0a6;
+    --approved-soft: #16332b;
+    --code-bg: #1f212a;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Hiragino Mincho ProN", serif;
+    font-size: 16.5px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, .eyebrow, nav, .chip, th, .btn-like {
+    font-family: "Archivo", "Hiragino Sans", sans-serif;
+  }
+
+  code, pre, .mono, .api-path, td.mono-cell {
+    font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  }
+
+  h1, h2, h3, h4 { text-wrap: balance; color: var(--ink); }
+
+  a { color: var(--accent-strong); }
+
+  .shell {
+    display: flex;
+    max-width: 1180px;
+    margin: 0 auto;
+    align-items: flex-start;
+  }
+
+  nav.toc {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex: 0 0 230px;
+    padding: 40px 20px 40px 32px;
+    font-size: 12.5px;
+  }
+
+  nav.toc .toc-title {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  nav.toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: toc;
+  }
+
+  nav.toc li { counter-increment: toc; margin-bottom: 2px; }
+
+  nav.toc a {
+    display: flex;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  nav.toc a:hover { background: var(--surface-alt); color: var(--ink); }
+
+  nav.toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  main {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 40px 48px 120px 40px;
+    max-width: 760px;
+  }
+
+  header.hero {
+    margin-bottom: 48px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    background: var(--accent-soft);
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin-bottom: 18px;
+  }
+
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--live);
+  }
+
+  h1.title {
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+    max-width: 62ch;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+
+  .meta-row strong { color: var(--ink-soft); font-weight: 500; }
+
+  section { margin-bottom: 56px; scroll-margin-top: 24px; }
+
+  h2.section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  h2.section-title .num {
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 32px 0 12px;
+  }
+
+  p { margin: 0 0 16px; max-width: 65ch; }
+
+  .lede { font-size: 18px; color: var(--ink-soft); font-style: italic; }
+
+  ul, ol.plain { margin: 0 0 16px; padding-left: 22px; max-width: 62ch; }
+  li { margin-bottom: 6px; }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 20px 0;
+    box-shadow: var(--shadow);
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout .callout-label {
+    font-family: "Archivo", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  figure { margin: 28px 0; }
+  figure svg { max-width: 100%; height: auto; display: block; }
+  figcaption {
+    font-family: "Archivo", sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 62ch;
+  }
+
+  .table-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--border); border-radius: 8px; }
+
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 14px; background: var(--surface); }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th {
+    font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--ink-faint); background: var(--surface-alt); font-weight: 700;
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.mono-cell { font-size: 12.5px; color: var(--ink-soft); }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
+    padding: 3px 9px; border-radius: 100px; white-space: nowrap;
+  }
+  .chip.live { background: var(--live-soft); color: var(--live); }
+  .chip.pending { background: var(--pending-soft); color: var(--pending); }
+  .chip.approved { background: var(--approved-soft); color: var(--approved); }
+  .chip.accent { background: var(--accent-soft); color: var(--accent-strong); }
+
+  pre.code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+  pre.code-block code { color: var(--ink); }
+
+  .api-path {
+    font-size: 13px;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .method { font-weight: 700; }
+  .method.get { color: var(--approved); }
+  .method.post { color: var(--accent-strong); }
+  .method.put { color: var(--pending); }
+  .method.delete { color: var(--live); }
+
+  .screen-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin: 18px 0;
+    box-shadow: var(--shadow);
+  }
+  .screen-card h4 {
+    font-family: "Archivo", sans-serif;
+    font-size: 16px;
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .screen-card .screen-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .screen-card .screen-purpose {
+    color: var(--ink-soft);
+    font-size: 14.5px;
+    margin: 0 0 14px;
+    max-width: 60ch;
+  }
+  .screen-card dl { display: grid; grid-template-columns: 96px 1fr; gap: 6px 14px; margin: 0; font-size: 13.5px; }
+  .screen-card dt { font-family: "Archivo", sans-serif; font-weight: 600; color: var(--ink-faint); font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; padding-top: 2px; }
+  .screen-card dd { margin: 0; }
+  .screen-card dd ul { margin: 4px 0 0; padding-left: 18px; }
+  .screen-card dd li { margin-bottom: 4px; }
+
+  .divider-label {
+    font-family: "Archivo", sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 30px 0 6px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  footer.doc-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  @media (max-width: 880px) {
+    nav.toc { display: none; }
+    main { max-width: 100%; padding: 28px 20px 100px; }
+    h1.title { font-size: 32px; }
+  }
+</style>
+
+<div class="shell">
+  <nav class="toc" aria-label="目次">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#overview">概要とスコープ</a></li>
+      <li><a href="#architecture">全体アーキテクチャ</a></li>
+      <li><a href="#data-model">データモデル</a></li>
+      <li><a href="#workflow">承認ワークフロー</a></li>
+      <li><a href="#screens">画面設計 &amp; APIマッピング</a></li>
+      <li><a href="#tech">実装方針</a></li>
+      <li><a href="#constraints">制約と注意点</a></li>
+      <li><a href="#future">拡張の方向性</a></li>
+      <li><a href="#appendix">付録：APIクイックリファレンス</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <span class="eyebrow"><span class="dot"></span>Demo Spec — 2026-08-31</span>
+      <h1 class="title">OnAir Console</h1>
+      <p class="subtitle">楽天市場の出店店舗が、自店のShoplive Sellerを起点に自由にライブコマース配信を行うための、楽天専用ダッシュボード設計書。</p>
+      <div class="meta-row">
+        <span><strong>対象:</strong> 店舗用画面 / 楽天市場管理者用画面</span>
+        <span><strong>接続:</strong> Shoplive API v2（実接続）</span>
+        <span><strong>版:</strong> Demo v0.1</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2 class="section-title"><span class="num">01</span>概要とスコープ</h2>
+      <p class="lede">審査や在庫連携、決済といった楽天側の業務ロジックはこのデモの本題ではない。本題は、Shopliveという配信基盤の上に、楽天の店舗運営フローをどう重ねるかという設計そのものだ。</p>
+      <p>本デモは、楽天市場の出店店舗がShopliveのアカウントを直接意識することなく、「楽天の画面から申請し、楽天の画面でライブを作り、楽天の画面で配信する」という体験を提供することを目的とする。裏側では実際にShoplive API（<code>https://private.shopliveapi.com/v2/…</code>）へリクエストが飛び、Seller・Campaign・商品の作成やライブ配信の開始/終了が本物のAPIレスポンスとして返ってくる。</p>
+      <p>すでにJWT／AccessKeyによる認証と <span class="chip accent">Retrieve a campaign info</span> の疎通確認は完了している（存在しないcampaignKeyに対して <code>404 / -710 Campaign does not exist</code> が返り、401ではないことから認証が正しく通っていることを確認済み）。</p>
+      <div class="callout">
+        <span class="callout-label">デモにおける実装/モックの切り分け</span>
+        <p><strong>実際にAPI接続する部分</strong>：Seller作成、Campaign作成・更新・商品紐付け、配信開始/終了、在庫状況・Now表示の切り替え、統計取得——つまり「Shopliveが本来やること」はすべて本物のAPIを叩く。<strong>モックで済ませる部分</strong>：店舗申請・ライブ申請の審査ステータス管理、店舗↔SellerIdの対応表など、Shoplive自体には存在しない「楽天独自の業務データ」はブラウザ内で完結させる（詳細は<a href="#tech">実装方針</a>）。</p>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2 class="section-title"><span class="num">02</span>全体アーキテクチャ</h2>
+      <p>店舗UIと管理者UIはいずれもブラウザで完結するフロントエンド中心の構成とし、Shoplive本番APIへの通信だけをサーバー側の薄いプロキシに集約する。理由は単純で、AccessKeyとJWTをブラウザのJavaScriptに直接埋め込むと誰でも閲覧できてしまうため、秘密鍵の保持場所をサーバー環境変数（<code>.env</code>）1箇所に限定する。</p>
+
+      <figure>
+        <svg viewBox="0 0 760 430" role="img" aria-label="店舗UIと管理者UIはローカルモックストアに直接読み書きし、Shoplive本番APIへの書き込みはNext.jsのサーバー側プロキシ1本に集約される構成図">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+            <marker id="arrowAccent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+          <g fill="none" stroke="currentColor" stroke-width="1.2">
+            <rect x="30" y="24" width="230" height="60" rx="8"/>
+            <rect x="500" y="24" width="230" height="60" rx="8"/>
+            <rect x="30" y="178" width="230" height="86" rx="8"/>
+            <rect x="290" y="178" width="230" height="86" rx="8" stroke="var(--accent)" stroke-width="1.6"/>
+            <rect x="290" y="344" width="230" height="60" rx="8"/>
+          </g>
+          <g font-size="13.5" font-family="Archivo, sans-serif" font-weight="700" fill="currentColor" text-anchor="middle">
+            <text x="145" y="50">店舗コンソール</text>
+            <text x="145" y="68" font-size="11" font-weight="500" fill="currentColor" opacity="0.6">（ブラウザ）</text>
+            <text x="615" y="50">管理者コンソール</text>
+            <text x="615" y="68" font-size="11" font-weight="500" fill="currentColor" opacity="0.6">（ブラウザ）</text>
+            <text x="145" y="212">ローカルモックストア</text>
+            <text x="145" y="230" font-size="11" font-weight="500" opacity="0.6">localStorage</text>
+            <text x="145" y="246" font-size="10.5" font-weight="500" opacity="0.55">申請・承認ステータス</text>
+            <text x="405" y="212" fill="var(--accent)">Next.js APIプロキシ</text>
+            <text x="405" y="230" font-size="11" font-weight="500" opacity="0.6">/app/api/shoplive/*</text>
+            <text x="405" y="246" font-size="10.5" font-weight="500" opacity="0.55">JWT/AccessKeyはここのみ保持</text>
+            <text x="405" y="378">Shoplive API v2</text>
+            <text x="405" y="394" font-size="10.5" font-weight="500" opacity="0.6">private.shopliveapi.com</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1.2" fill="none">
+            <line x1="145" y1="84" x2="145" y2="176" marker-end="url(#arrow)"/>
+            <line x1="230" y1="84" x2="330" y2="176" marker-end="url(#arrow)"/>
+            <line x1="530" y1="84" x2="250" y2="176" marker-end="url(#arrow)"/>
+            <line x1="615" y1="84" x2="470" y2="176" marker-end="url(#arrow)"/>
+          </g>
+          <line x1="405" y1="264" x2="405" y2="342" stroke="var(--accent)" stroke-width="1.8" marker-end="url(#arrowAccent)"/>
+          <g font-size="11" font-family="IBM Plex Mono, monospace" fill="currentColor">
+            <text x="30" y="130">R/W 申請・承認状態</text>
+            <text x="330" y="150">campaign / product 操作</text>
+            <text x="530" y="130" text-anchor="end">R/W 申請・承認状態</text>
+            <text x="470" y="150" text-anchor="end">seller作成 / transfer</text>
+          </g>
+          <text x="420" y="308" font-size="11.5" font-family="IBM Plex Mono, monospace" fill="var(--accent)">Authorization: Bearer &#123;JWT&#125;</text>
+        </svg>
+        <figcaption>店舗UI・管理者UIはともにローカルモックストア（申請・承認まわりの楽天独自データ）へ直接読み書きするが、Shoplive本番APIへの書き込みはNext.jsのサーバー側プロキシ1本に集約し、JWTはブラウザへ渡さない。</figcaption>
+      </figure>
+
+      <h3>コンポーネント</h3>
+      <ul>
+        <li><strong>店舗コンソール</strong> — 店舗が複数Sellerを切り替えながらライブの作成・設定・配信を行う画面群。</li>
+        <li><strong>管理者コンソール</strong> — 楽天市場運営者が店舗申請とライブ申請を審査し、オンエア中の配信を監視する画面群。</li>
+        <li><strong>ローカルモックストア</strong> — Shopliveには存在しない「審査中/却下」といった楽天独自ステータスを保持する、DBを持たない簡易ストア。</li>
+        <li><strong>Next.js APIプロキシ</strong> — <code>Authorization: Bearer</code> ヘッダーの付与だけを行う薄い中継層。ビジネスロジックは持たない。</li>
+      </ul>
+    </section>
+
+    <section id="data-model">
+      <h2 class="section-title"><span class="num">03</span>データモデル</h2>
+      <p>Shoplive側のSeller・Campaign・Productは、Sellerを中心にゆるく紐づくハブ&amp;スポーク構造である。Productは特定のCampaignに属さず、Add/Removeの都度キャンペーンに紐付け・解除される中間関係にある。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>オブジェクト</th><th>所有元</th><th>キー</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr><td>Seller</td><td>楽天店舗 1件に対応</td><td class="mono-cell">sellerId</td><td>店舗名・店舗URL・説明のみを持つ薄いマスタ</td></tr>
+            <tr><td>Campaign</td><td>ライブ 1本に対応</td><td class="mono-cell">campaignKey</td><td>Seller・商品リストを任意で参照。ステータスは READY/REHEARSAL/ONAIR/ENDED</td></tr>
+            <tr><td>Product</td><td>Sellerの商品マスタ</td><td class="mono-cell">productId</td><td>複数Campaignで再利用可能。Campaignごとの並び順・在庫状態はCampaignProduct側で管理</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>これに対し、楽天独自に必要となるのは「審査」という概念そのものだ。Shopliveには承認待ちの状態がないため、以下2つのエンティティをローカルモックストアに追加する。</p>
+
+      <pre class="code-block"><code>// ローカルモックストア（localStorage）のスキーマ
+type StoreApplication = {
+  id: string
+  storeName: string          // 店舗名
+  storeUrl: string           // 店舗URL
+  liveOverview: string       // ライブ配信の概要
+  status: "審査中" | "承認" | "却下"
+  shopliveSellerId?: number  // 承認時にCreate a sellerで採番
+  createdAt: string
+}
+
+type LiveApplication = {
+  id: string
+  storeApplicationId: string
+  title: string
+  scheduledStartAt: string
+  productIds: number[]
+  status: "審査中" | "承認" | "却下"
+  campaignKey?: string       // 申請と同時にCreate a campaignで採番
+  createdAt: string
+}</code></pre>
+    </section>
+
+    <section id="workflow">
+      <h2 class="section-title"><span class="num">04</span>承認ワークフロー</h2>
+      <p>審査時にはタイトル・サムネイル・登録商品まで確定している必要があるため、ライブ申請は<strong>送信した瞬間に本物のCampaignをShoplive上に作成する</strong>。ただし所属Sellerは楽天が管理する「審査待ちプレースホルダーSeller」とし、内容が公開状態に見えないようにしておく。管理者が承認した時点で、はじめて該当店舗の実Sellerへ<code>transferToSeller</code>する。</p>
+
+      <figure>
+        <svg viewBox="0 0 700 560" role="img" aria-label="ライブ申請は送信時点でプレースホルダーSeller配下にCampaignを作成し、管理者承認時にTransfer campaign to sellerで実店舗のSellerへ付け替える、または却下時は差し戻すフロー図">
+          <defs>
+            <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+            </marker>
+            <marker id="arrowApproved" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--approved)"/>
+            </marker>
+            <marker id="arrowLive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--live)"/>
+            </marker>
+          </defs>
+          <g fill="none" stroke="currentColor" stroke-width="1.2">
+            <rect x="140" y="16" width="420" height="56" rx="8"/>
+            <rect x="140" y="112" width="420" height="56" rx="8"/>
+            <rect x="140" y="208" width="420" height="56" rx="8"/>
+            <rect x="140" y="304" width="420" height="56" rx="8"/>
+            <rect x="30" y="424" width="300" height="66" rx="8" stroke="var(--approved)" stroke-width="1.6"/>
+            <rect x="370" y="424" width="300" height="66" rx="8" stroke="var(--live)" stroke-width="1.6"/>
+          </g>
+          <g font-size="13.5" font-family="Archivo, sans-serif" font-weight="600" fill="currentColor" text-anchor="middle">
+            <text x="350" y="40">① 店舗:タイトル・日時・商品・サムネイルを入力し送信</text>
+            <text x="350" y="136">② Shoplive: Campaign作成 + 商品紐付け（Seller=プレースホルダー）</text>
+            <text x="350" y="232">③ ローカル: LiveApplication を「審査中」で登録（campaignKey保存）</text>
+            <text x="350" y="328">④ 管理者:リハーサルプレビューで内容確認</text>
+            <text x="180" y="452" fill="var(--approved)">⑤ 承認</text>
+            <text x="520" y="452" fill="var(--live)">⑤ 却下</text>
+          </g>
+          <g font-size="11.5" font-family="IBM Plex Mono, monospace" fill="currentColor" text-anchor="middle">
+            <text x="180" y="470">transferToSeller(実店舗Seller)</text>
+            <text x="520" y="470">status を却下に更新</text>
+          </g>
+          <g font-size="11" font-family="Archivo, sans-serif" fill="currentColor" opacity="0.65" text-anchor="middle">
+            <text x="180" y="486">→ 店舗のライブ一覧に反映・配信可能に</text>
+            <text x="520" y="486">→ 店舗へ差し戻し、再編集のうえ再申請</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1.2" fill="none">
+            <line x1="350" y1="72" x2="350" y2="110" marker-end="url(#arrow2)"/>
+            <line x1="350" y1="168" x2="350" y2="206" marker-end="url(#arrow2)"/>
+            <line x1="350" y1="264" x2="350" y2="302" marker-end="url(#arrow2)"/>
+          </g>
+          <line x1="320" y1="360" x2="185" y2="422" stroke="var(--approved)" stroke-width="1.4" marker-end="url(#arrowApproved)"/>
+          <line x1="380" y1="360" x2="515" y2="422" stroke="var(--live)" stroke-width="1.4" marker-end="url(#arrowLive)"/>
+        </svg>
+        <figcaption>ライブ申請は送信時点でShoplive上に実キャンペーンを作成し（プレースホルダーSeller所属）、承認時に <span class="api-path">PUT /campaign/&#123;campaignKey&#125;/transferToSeller/&#123;sellerId&#125;</span> で実店舗のSellerへ付け替える。却下時はローカルステータスのみ更新し、Shoplive側のキャンペーンは残置または任意で削除する。</figcaption>
+      </figure>
+
+      <p>店舗の新規アカウント申請も同じ考え方に揃える。申請内容（店舗名・店舗URL・概要）はまずローカルに「審査中」として保存し、管理者が承認した瞬間に <span class="chip accent">Create a seller</span> を呼んで初めてShoplive上にSellerが生まれる。Sellerは作成後すぐに使える状態のため、Campaignのようにプレースホルダーを挟む必要はない。</p>
+    </section>
+
+    <section id="screens">
+      <h2 class="section-title"><span class="num">05</span>画面設計 &amp; APIマッピング</h2>
+      <p>各画面が呼び出すShoplive APIと、ローカルモックストアが受け持つ範囲を明示する。<span class="chip live">実API</span> は本物のShopliveエンドポイントへの通信、<span class="chip pending">ローカル</span> は楽天独自データの読み書きを示す。</p>
+
+      <h3>CampaignMetaの全項目とAPI対応状況</h3>
+      <p>「ライブの新規作成」「ライブの設定」画面はCreate/Update a campaignが受け付ける項目を漏れなく網羅する。逆に、Campaignオブジェクトが持つがCreate/Update APIのリクエストボディには存在しない項目（画像・動画・タグ）も明示し、対象外であることを設計上はっきりさせる。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>項目</th><th>API対応</th><th>画面</th><th>備考</th></tr></thead>
+          <tbody>
+            <tr><td class="mono-cell">title</td><td><span class="chip approved">Create/Update</span></td><td>S-3, S-4</td><td>必須。空文字での更新不可（<code>-837</code>）</td></tr>
+            <tr><td class="mono-cell">description</td><td><span class="chip approved">Create/Update</span></td><td>S-3, S-4</td><td>任意の説明文</td></tr>
+            <tr><td class="mono-cell">scheduledStartAt</td><td><span class="chip approved">Create/Update</span></td><td>S-3, S-4</td><td>UTC ISO形式。配信予定日時</td></tr>
+            <tr><td class="mono-cell">scheduledEndAt</td><td><span class="chip approved">Create/Update</span></td><td>S-3, S-4</td><td>任意。配信終了予定日時</td></tr>
+            <tr><td class="mono-cell">rehearsalPasscode</td><td><span class="chip approved">Create/Update</span></td><td>S-3, S-4</td><td>リハーサル入室用パスコード</td></tr>
+            <tr><td class="mono-cell">serveReplay</td><td><span class="chip approved">Create/Update</span></td><td>S-3, S-4</td><td>終了後にリプレイを公開するかの真偽値</td></tr>
+            <tr><td class="mono-cell">seller.sellerId</td><td><span class="chip pending">Createのみ</span></td><td>S-3 / A-3</td><td>Update不可。所属変更は<span class="api-path">transferToSeller</span>専用APIで行う（<a href="#workflow">承認ワークフロー</a>）</td></tr>
+            <tr><td class="mono-cell">brand.brandId</td><td><span class="chip pending">Create/Updateで受理</span></td><td>対象外</td><td>Brandを作成・検索するAPIが存在せず、Shoplive管理コンソール側で用意されたIDが必要。本デモでは未使用</td></tr>
+            <tr><td class="mono-cell">tags</td><td><span class="chip live">API非対応</span></td><td>対象外</td><td>Campaignオブジェクトのレスポンスには含まれるが、Create/Updateのリクエストボディには存在しない</td></tr>
+            <tr><td class="mono-cell">logoImageUrl / preCampaignVideoUrl / preCampaignImageUrl / postCampaignImageUrl / backgroundImageUrl / ieUnsupportImageUrl</td><td><span class="chip live">API非対応</span></td><td>対象外</td><td>いずれもレスポンス専用。ポップアップと同様、<a href="#constraints">Shoplive管理コンソールでのみ設定可能</a></td></tr>
+            <tr><td class="mono-cell">campaignId / campaignKey / accessKey / shoplivePlayerUrl / campaignStatus / userCount / likeCount / campaignStartedAt / campaignEndedAt / createdAt / updatedAt</td><td>読み取り専用</td><td>S-2, S-5</td><td>システムが自動採番・更新。表示のみで編集不可</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider-label">店舗用画面</div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">S-1</span>新規アカウント作成画面</h4>
+        <p class="screen-purpose">店舗名・店舗URL・ライブ配信の概要を入力し、楽天市場管理者の審査に申請する。</p>
+        <dl>
+          <dt>UI要素</dt><dd>店舗名/店舗URL/概要フォーム、送信後は「審査中」ステータス表示</dd>
+          <dt>API</dt><dd><span class="chip pending">ローカルのみ</span> StoreApplicationを status=審査中 で作成。この時点ではShopliveは未呼び出し</dd>
+        </dl>
+      </div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">S-2</span>ライブ一覧画面</h4>
+        <p class="screen-purpose">自店（複数Seller切り替え可）が持つライブを、審査中・配信前・配信中・終了で横断表示する。</p>
+        <dl>
+          <dt>UI要素</dt><dd>Sellerスイッチャー、ステータス別タブ、サムネイル付きカード一覧</dd>
+          <dt>API</dt><dd>
+            <ul>
+              <li><span class="chip live">実API</span> <span class="method get">GET</span> <span class="api-path">/campaign?sellerId=&#123;id&#125;</span>（Search campaigns、承認済みライブ）</li>
+              <li><span class="chip pending">ローカル</span> LiveApplication（審査中/却下）をマージして表示</li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">S-3</span>ライブの新規作成画面</h4>
+        <p class="screen-purpose">Create a campaignが受け付ける項目（タイトル・説明・配信開始/終了予定・リハーサルパスコード・リプレイ公開可否）と登録商品を確定させ、審査に申請する。</p>
+        <dl>
+          <dt>UI要素</dt><dd>基本情報フォーム（タイトル/説明/配信開始日時/配信終了予定日時/リハーサルパスコード/リプレイ公開トグル）、サムネイル画像（<strong>Rakuten一覧表示用のローカル項目でShopliveへは送信しない</strong>）、商品ピッカー、プレビュー</dd>
+          <dt>API</dt><dd>
+            <ul>
+              <li><span class="chip live">実API</span> <span class="method post">POST</span> <span class="api-path">/campaign</span>（title / description / scheduledStartAt / scheduledEndAt / rehearsalPasscode / serveReplay、seller=プレースホルダー）</li>
+              <li><span class="chip live">実API</span> <span class="method post">POST</span> <span class="api-path">/campaign/&#123;campaignKey&#125;/product</span>（商品一括紐付け）</li>
+              <li><span class="chip pending">ローカル</span> LiveApplicationを status=審査中 で作成、campaignKeyとサムネイル画像を保存</li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">S-4</span>ライブの設定画面</h4>
+        <p class="screen-purpose">承認済みライブのCampaignMeta全項目（タイトル・説明・配信開始/終了予定・リハーサルパスコード・リプレイ公開可否）・商品構成・表示順を編集する（審査中は取り下げのみ許可）。ポップアップ（バナー）・画像/動画系項目はAPI非対応のため本画面の対象外（<a href="#constraints">制約参照</a>）。</p>
+        <dl>
+          <dt>UI要素</dt><dd>基本情報タブ（タイトル/説明/配信開始・終了日時/リハーサルパスコード/リプレイ公開トグル）、商品構成タブ（追加/削除/並び替えUI、ドラッグ操作）</dd>
+          <dt>API</dt><dd>
+            <ul>
+              <li><span class="chip live">実API</span> <span class="method put">PUT</span> <span class="api-path">/campaign/&#123;campaignKey&#125;</span>（Update a campaign）</li>
+              <li><span class="chip live">実API</span> <span class="method post">POST</span> / <span class="method delete">DELETE</span> <span class="api-path">/campaign/&#123;campaignKey&#125;/product</span></li>
+              <li><span class="chip live">実API</span> <span class="method put">PUT</span> <span class="api-path">/campaign/&#123;campaignKey&#125;/product/order</span></li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">S-5</span>ライブ配信中コンソール画面</h4>
+        <p class="screen-purpose">実際の配信操作を行う、店舗にとって最も緊張感のある画面。</p>
+        <dl>
+          <dt>UI要素</dt><dd>開始/終了ボタン、商品ごとの在庫状況・Now表示トグル、簡易視聴統計</dd>
+          <dt>API</dt><dd>
+            <ul>
+              <li><span class="chip live">実API</span> <span class="method post">POST</span> <span class="api-path">/console/&#123;campaignKey&#125;/start?rehearsal=</span></li>
+              <li><span class="chip live">実API</span> <span class="method post">POST</span> <span class="api-path">/console/&#123;campaignKey&#125;/end</span></li>
+              <li><span class="chip live">実API</span> <span class="method put">PUT</span> <span class="api-path">/console/&#123;campaignKey&#125;/product/stockStatus</span></li>
+              <li><span class="chip live">実API</span> <span class="method put">PUT</span> <span class="api-path">/console/&#123;campaignKey&#125;/product/show</span>（リアルタイム反映）</li>
+              <li><span class="chip live">実API</span> <span class="method get">GET</span> <span class="api-path">/campaign/&#123;campaignKey&#125;/stats</span></li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="divider-label">楽天市場管理者用画面</div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">A-1</span>アカウント申請一覧・承認却下画面</h4>
+        <p class="screen-purpose">店舗からの出店（Seller化）申請を審査する。</p>
+        <dl>
+          <dt>UI要素</dt><dd>申請一覧テーブル、店舗詳細ドロワー、承認/却下ボタン</dd>
+          <dt>API</dt><dd>
+            <ul>
+              <li><span class="chip pending">ローカル</span> StoreApplication（status=審査中）を一覧取得</li>
+              <li><span class="chip live">実API</span> 承認時 <span class="method post">POST</span> <span class="api-path">/seller</span>（Create a seller）→ sellerIdをローカルに保存</li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">A-2</span>オンエア中のライブ一覧画面（プレビュー付き）</h4>
+        <p class="screen-purpose">現在配信中のライブを一望し、プレビューでそのまま内容確認できる監視画面。</p>
+        <dl>
+          <dt>UI要素</dt><dd>配信中カードのグリッド、クリックでプレビュー動画埋め込み、簡易視聴数</dd>
+          <dt>API</dt><dd>
+            <ul>
+              <li><span class="chip live">実API</span> <span class="method get">GET</span> <span class="api-path">/campaign?campaignStatus=ONAIR</span>（Search campaigns）</li>
+              <li><span class="chip live">実API</span> 各カードで <code>stream.previewLiveUrl</code> を埋め込み再生</li>
+              <li><span class="chip live">実API</span> <span class="method get">GET</span> <span class="api-path">/campaign/&#123;campaignKey&#125;/stats</span>（任意、視聴数の補助表示）</li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+
+      <div class="screen-card">
+        <h4><span class="screen-num">A-3</span>新規ライブ申請一覧・承認却下画面</h4>
+        <p class="screen-purpose">店舗が申請したライブの内容をリハーサルプレビューで確認し、公開可否を判断する。</p>
+        <dl>
+          <dt>UI要素</dt><dd>申請一覧テーブル、リハーサルプレビュー、承認/却下ボタン</dd>
+          <dt>API</dt><dd>
+            <ul>
+              <li><span class="chip pending">ローカル</span> LiveApplication（status=審査中）を一覧取得</li>
+              <li><span class="chip live">実API</span> 承認時 <span class="method put">PUT</span> <span class="api-path">/campaign/&#123;campaignKey&#125;/transferToSeller/&#123;sellerId&#125;</span></li>
+              <li><span class="chip pending">ローカル</span> 却下時は status=却下 のみ更新（Shoplive側は残置）</li>
+            </ul>
+          </dd>
+        </dl>
+      </div>
+    </section>
+
+    <section id="tech">
+      <h2 class="section-title"><span class="num">06</span>実装方針</h2>
+      <p>「フロントエンド中心・モック中心」という方針に沿って、次の構成を採る。</p>
+      <ul>
+        <li><strong>Next.js（App Router）</strong>で店舗/管理者の両UIを1アプリに同居させ、画面右上のロールスイッチで切り替える（デモのため実認証は行わない）。</li>
+        <li><strong>Route Handler（<code>/app/api/shoplive/*</code>）</strong>を薄いプロキシとして用意し、<code>.env</code>のAccessKey/JWTを付与してShopliveへ中継するだけの役割に限定する。ビジネスロジックは持たせない。</li>
+        <li><strong>楽天独自データ（StoreApplication / LiveApplication）</strong>はDBを持たず<code>localStorage</code>で完結させる。リロードで消えることはデモとして許容する。</li>
+        <li><strong>楽天管理用プレースホルダーSeller</strong>を1件、デモ開始前に手動で作成しておき、そのsellerIdを設定値として保持する。</li>
+      </ul>
+    </section>
+
+    <section id="constraints">
+      <h2 class="section-title"><span class="num">07</span>制約と注意点</h2>
+      <ul>
+        <li>楽天独自データはブラウザのlocalStorageに閉じるため、<strong>別端末・別ブラウザ間で状態は共有されない</strong>。デモは同一ブラウザ内で完結させる。</li>
+        <li>却下されたライブ申請のCampaignをShoplive側でどう扱うか（残置 or 削除）は運用ルール次第。デモでは残置とし、削除は任意対応とする。</li>
+        <li>本デモの.envに格納したAccessKey/JWTは<strong>単一のShopliveアカウント</strong>を指す。複数店舗（Seller）はすべてこの1アカウント配下で管理される前提。</li>
+        <li>チャット管理・ポップアップ管理などShoplive管理コンソール側の高度な運用機能は、デモの主要導線（作成〜配信）には含めない。</li>
+        <li><strong>ポップアップ（バナー）登録はAPI非対応</strong>。Shoplive API v2にはポップアップ関連のエンドポイントが存在せず、ガイド上も「Shoplive管理コンソールのボタン操作」としてのみ説明されている。そのため本デモの「ライブの設定」画面では扱わず、対象外とする。将来的にAPI提供の要望をShoplive側（ask@shoplive.cloud）へ出すことは可能。</li>
+        <li><strong>キャンペーンの画像・動画系項目（logoImageUrl / preCampaignVideoUrl / preCampaignImageUrl / postCampaignImageUrl / backgroundImageUrl / ieUnsupportImageUrl）とtagsもAPI非対応</strong>。Campaignオブジェクトのレスポンスには含まれるが、Create/Update a campaignのリクエストボディでは受け付けられない。ポップアップと同じくShoplive管理コンソール側の設定項目であり、本デモの「ライブの新規作成」画面にあるサムネイル項目はAPIには送信されないRakuten一覧表示専用のローカル項目として扱う。</li>
+        <li><strong>brand.brandIdはCreate/Updateのリクエストとしては受理されるが、Brand自体を作成・検索するAPIが存在しない</strong>。事前にShoplive管理コンソール側で用意されたIDを渡す運用が必要になるため、本デモでは未使用とする。</li>
+      </ul>
+    </section>
+
+    <section id="future">
+      <h2 class="section-title"><span class="num">08</span>拡張の方向性</h2>
+      <ul>
+        <li>楽天IDとの実認証連携（SSO）、店舗ロールベースのアクセス制御</li>
+        <li>ローカルモックストアを実DBへ置き換え、複数運用者・複数端末での状態共有</li>
+        <li>Shoplive Webhookを受けて配信状況をリアルタイム同期（オンエア一覧のポーリング撤廃）</li>
+        <li>審査却下時のCampaign自動削除、通知（承認/却下）のメール連携</li>
+      </ul>
+    </section>
+
+    <section id="appendix">
+      <h2 class="section-title"><span class="num">09</span>付録：APIクイックリファレンス</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>用途</th><th>Method</th><th>Path</th></tr></thead>
+          <tbody>
+            <tr><td>Sellerを作成</td><td class="mono-cell"><span class="method post">POST</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/seller</td></tr>
+            <tr><td>Campaignを作成</td><td class="mono-cell"><span class="method post">POST</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/campaign</td></tr>
+            <tr><td>Campaignを検索</td><td class="mono-cell"><span class="method get">GET</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/campaign</td></tr>
+            <tr><td>Campaignを更新</td><td class="mono-cell"><span class="method put">PUT</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/campaign/&#123;campaignKey&#125;</td></tr>
+            <tr><td>商品をCampaignに追加</td><td class="mono-cell"><span class="method post">POST</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/campaign/&#123;campaignKey&#125;/product</td></tr>
+            <tr><td>商品の並び替え</td><td class="mono-cell"><span class="method put">PUT</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/campaign/&#123;campaignKey&#125;/product/order</td></tr>
+            <tr><td>CampaignをSellerへ移管</td><td class="mono-cell"><span class="method put">PUT</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/campaign/&#123;campaignKey&#125;/transferToSeller/&#123;sellerId&#125;</td></tr>
+            <tr><td>配信/リハーサル開始</td><td class="mono-cell"><span class="method post">POST</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/console/&#123;campaignKey&#125;/start</td></tr>
+            <tr><td>配信/リハーサル終了</td><td class="mono-cell"><span class="method post">POST</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/console/&#123;campaignKey&#125;/end</td></tr>
+            <tr><td>在庫状況の変更</td><td class="mono-cell"><span class="method put">PUT</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/console/&#123;campaignKey&#125;/product/stockStatus</td></tr>
+            <tr><td>Now表示の切り替え</td><td class="mono-cell"><span class="method put">PUT</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/console/&#123;campaignKey&#125;/product/show</td></tr>
+            <tr><td>キャンペーン統計取得</td><td class="mono-cell"><span class="method get">GET</span></td><td class="mono-cell">/v2/&#123;accessKey&#125;/campaign/&#123;campaignKey&#125;/stats</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="doc-footer">
+      OnAir Console — Rakuten × Shoplive Demo Spec v0.1 / 2026-08-31
+    </footer>
+  </main>
+</div>

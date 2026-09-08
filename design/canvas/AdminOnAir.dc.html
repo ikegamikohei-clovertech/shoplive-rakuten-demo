@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f5f5f2; --surface:#ffffff; --surface-alt:#eeeee9;
+      --border:#e1e1da; --border-strong:#cfcfc6;
+      --ink:#1c1e24; --ink-soft:#5b5e69; --ink-faint:#9195a0;
+      --accent:#3d3a7a; --accent-strong:#2c295c; --accent-soft:#ecebf6;
+      --live:#c23f3f; --live-soft:#f8e8e6;
+      --shadow-card:0 1px 2px rgba(28,30,36,.05),0 6px 18px rgba(28,30,36,.07);
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif;}
+    a{color:var(--accent-strong);text-decoration:none;}
+    .icon{width:16px;height:16px;flex:0 0 auto;}
+    .icon-sm{width:14px;height:14px;}
+
+    .app-header{display:flex;align-items:center;gap:32px;padding:0 32px;height:68px;background:var(--surface);border-bottom:1px solid var(--border);}
+    .brand{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:800;font-family:"Archivo",sans-serif;}
+    .brand .icon{width:22px;height:22px;color:var(--accent);}
+    .brand-accent{color:var(--accent);}
+    .main-nav{display:flex;flex:1;}
+    .nav-link{display:flex;align-items:center;height:68px;font-size:14px;font-weight:600;color:var(--ink-faint);border-bottom:2px solid transparent;margin-right:22px;}
+    .nav-link.active{color:var(--ink);border-bottom-color:var(--accent);}
+    .header-right{display:flex;align-items:center;gap:14px;}
+    .role-badge{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:100px;background:var(--surface-alt);font-size:12.5px;font-weight:700;color:var(--ink-soft);}
+    .avatar{width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent-strong);font-family:"Archivo",sans-serif;}
+
+    .page{max-width:1400px;margin:0 auto;padding:32px 32px 90px;}
+    .page-head{display:flex;align-items:center;gap:12px;margin-bottom:6px;}
+    .page-title{font-family:"Archivo",sans-serif;font-size:26px;font-weight:800;margin:0;letter-spacing:-0.01em;}
+    .live-count{display:flex;align-items:center;gap:7px;background:var(--live-soft);color:var(--live);font-family:"Archivo",sans-serif;font-size:12px;font-weight:800;padding:5px 12px;border-radius:100px;}
+    .live-count .dot{width:6px;height:6px;border-radius:50%;background:var(--live);}
+    .page-sub{font-size:13.5px;color:var(--ink-soft);margin:0 0 26px;}
+
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-card);}
+    .stage{height:190px;background:#111;position:relative;overflow:hidden;}
+    .stage-noise{position:absolute;inset:0;}
+    .stage-top{position:relative;display:flex;justify-content:space-between;padding:14px;}
+    .stage-live{display:flex;align-items:center;gap:5px;background:var(--live);color:#fff;font-family:"Archivo",sans-serif;font-size:10.5px;font-weight:800;letter-spacing:.04em;padding:4px 8px;border-radius:5px;}
+    .stage-live .dot{width:5px;height:5px;border-radius:50%;background:#fff;}
+    .stage-viewers{display:flex;align-items:center;gap:5px;font-size:11.5px;color:#e6e6ea;font-family:"IBM Plex Mono",monospace;}
+    .wave{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:flex-end;gap:3px;height:38px;padding:0 14px 10px;}
+    .wave i{width:4px;border-radius:2px;}
+
+    .card-body{padding:16px 18px 18px;}
+    .store-line{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--ink-faint);font-weight:600;margin-bottom:6px;}
+    .card-title{font-size:14.5px;font-weight:700;margin:0 0 12px;line-height:1.5;}
+    .card-stats{display:flex;gap:14px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);border-top:1px dashed var(--border);padding-top:12px;}
+    .card-stats span{display:flex;align-items:center;gap:4px;}
+    .card-stats .icon{color:var(--ink-faint);width:13px;height:13px;}
+  </style>
+</helmet>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="14" r="2" fill="currentColor" stroke="none"/><path d="M8.2 10.2a5.4 5.4 0 0 1 7.6 0"/><path d="M5.5 7.5a9.2 9.2 0 0 1 13 0"/></svg>
+    OnAir<span class="brand-accent">Console</span>
+  </div>
+  <nav class="main-nav">
+    <a class="nav-link">アカウント申請</a>
+    <a class="nav-link active">オンエア中のライブ</a>
+    <a class="nav-link">ライブ申請</a>
+  </nav>
+  <div class="header-right">
+    <div class="role-badge">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      楽天市場 運営事務局
+    </div>
+    <div class="avatar">運</div>
+  </div>
+</header>
+
+<div class="page">
+  <div class="page-head">
+    <h1 class="page-title">オンエア中のライブ</h1>
+    <span class="live-count"><span class="dot"></span>現在 3件配信中</span>
+  </div>
+  <p class="page-sub">配信中のライブをプレビューで確認できます。カードをクリックすると映像を拡大表示します。</p>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="stage" style="background:radial-gradient(circle at 30% 30%,#2a2650,#111 60%);">
+        <div class="stage-top">
+          <span class="stage-live"><span class="dot"></span>LIVE</span>
+          <span class="stage-viewers"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>1,284</span>
+        </div>
+        <div class="wave">
+          <i style="height:12px;background:#9490dd"></i><i style="height:22px;background:#9490dd"></i><i style="height:9px;background:#9490dd"></i><i style="height:28px;background:#9490dd"></i><i style="height:16px;background:#9490dd"></i><i style="height:24px;background:#9490dd"></i><i style="height:11px;background:#9490dd"></i><i style="height:20px;background:#9490dd"></i><i style="height:30px;background:#9490dd"></i><i style="height:14px;background:#9490dd"></i>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="store-line">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1-5h14l1 5"/><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/><line x1="4" y1="9" x2="20" y2="9"/></svg>
+          宮崎茶房 みやざき本店
+        </div>
+        <p class="card-title">新茶入荷記念！おうちで楽しむ本格煎茶の淹れ方</p>
+        <div class="card-stats">
+          <span class="font-m" style="font-family:'IBM Plex Mono',monospace;">00:14:32</span>
+          <span><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-4.5-3-9-6.5-9-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-4.5 8-9 11z"/></svg>612</span>
+          <span><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="11" rx="2"/><polyline points="8 16 8 20 12 16"/></svg>348</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stage" style="background:radial-gradient(circle at 65% 35%,#2f2418,#111 60%);">
+        <div class="stage-top">
+          <span class="stage-live"><span class="dot"></span>LIVE</span>
+          <span class="stage-viewers"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>956</span>
+        </div>
+        <div class="wave">
+          <i style="height:20px;background:#e0a752"></i><i style="height:10px;background:#e0a752"></i><i style="height:26px;background:#e0a752"></i><i style="height:14px;background:#e0a752"></i><i style="height:22px;background:#e0a752"></i><i style="height:9px;background:#e0a752"></i><i style="height:18px;background:#e0a752"></i><i style="height:28px;background:#e0a752"></i><i style="height:12px;background:#e0a752"></i><i style="height:24px;background:#e0a752"></i>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="store-line">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1-5h14l1 5"/><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/><line x1="4" y1="9" x2="20" y2="9"/></svg>
+          キッチン雑貨SUNNY STORE
+        </div>
+        <p class="card-title">母の日限定 北欧鋳物ホーロー鍋フェア</p>
+        <div class="card-stats">
+          <span class="font-m" style="font-family:'IBM Plex Mono',monospace;">00:42:10</span>
+          <span><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-4.5-3-9-6.5-9-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-4.5 8-9 11z"/></svg>430</span>
+          <span><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="11" rx="2"/><polyline points="8 16 8 20 12 16"/></svg>201</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stage" style="background:radial-gradient(circle at 40% 60%,#2a1f18,#111 60%);">
+        <div class="stage-top">
+          <span class="stage-live"><span class="dot"></span>LIVE</span>
+          <span class="stage-viewers"><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>312</span>
+        </div>
+        <div class="wave">
+          <i style="height:8px;background:#c9967a"></i><i style="height:16px;background:#c9967a"></i><i style="height:6px;background:#c9967a"></i><i style="height:12px;background:#c9967a"></i><i style="height:20px;background:#c9967a"></i><i style="height:9px;background:#c9967a"></i><i style="height:14px;background:#c9967a"></i><i style="height:7px;background:#c9967a"></i><i style="height:18px;background:#c9967a"></i><i style="height:11px;background:#c9967a"></i>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="store-line">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1-5h14l1 5"/><path d="M4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9"/><line x1="4" y1="9" x2="20" y2="9"/></svg>
+          自家焙煎珈琲 まめや
+        </div>
+        <p class="card-title">ハンドドリップ講座＆福袋抽選会</p>
+        <div class="card-stats">
+          <span class="font-m" style="font-family:'IBM Plex Mono',monospace;">00:05:47</span>
+          <span><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-4.5-3-9-6.5-9-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-4.5 8-9 11z"/></svg>88</span>
+          <span><svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="11" rx="2"/><polyline points="8 16 8 20 12 16"/></svg>54</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+</body>
+</html>
